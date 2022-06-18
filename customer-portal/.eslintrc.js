@@ -30,6 +30,7 @@ module.exports = {
     "airbnb",
     "prettier",
     "eslint:recommended",
+    "plugin:jest-dom/recommended",
     "plugin:jsx-a11y/recommended",
     "plugin:prettier/recommended",
     "plugin:sonarjs/recommended",
@@ -75,6 +76,10 @@ module.exports = {
         namedComponents: "arrow-function",
         unnamedComponents: "arrow-function",
       },
+    ],
+    "import/no-extraneous-dependencies": [
+      "error",
+      { devDependencies: ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"] },
     ],
   },
 };
