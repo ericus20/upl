@@ -62,9 +62,10 @@ public interface EmailService {
    * Sends an email to the provided user to confirm account activation.
    *
    * @param userDto the user
+   * @param baseUrl the base url
    * @throws InvalidServiceRequestException if the email request is invalid
    */
-  void sendAccountConfirmationEmail(UserDto userDto);
+  void sendAccountConfirmationEmail(UserDto userDto, String baseUrl);
 
   /**
    * Sends an email to the provided user to reset password.

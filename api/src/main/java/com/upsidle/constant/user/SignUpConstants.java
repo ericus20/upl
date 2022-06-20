@@ -14,7 +14,9 @@ public final class SignUpConstants {
   /** URL Mapping Constants. */
   public static final String SIGN_UP_MAPPING = "/sign-up";
 
-  public static final String SIGN_UP_VERIFY_MAPPING = "/verify";
+  public static final String ACCOUNT_EXISTS = "Account already exist!";
+
+  public static final String EMAIL_VERIFY_MAPPING = "/verify-email";
 
   private SignUpConstants() {
     throw new AssertionError(ErrorConstants.NOT_INSTANTIABLE);

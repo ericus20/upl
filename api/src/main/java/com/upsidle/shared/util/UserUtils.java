@@ -14,6 +14,7 @@ import com.upsidle.shared.dto.UserHistoryDto;
 import com.upsidle.shared.dto.mapper.UserDtoMapper;
 import com.upsidle.shared.dto.mapper.UserHistoryDtoMapper;
 import com.upsidle.shared.util.core.ValidationUtils;
+import com.upsidle.web.payload.request.SignUpRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -186,6 +187,18 @@ public final class UserUtils {
     var user = createUser(username, password, email, enabled);
 
     return UserUtils.convertToUserDto(user);
+  }
+
+  /**
+   * Transfers data from signUpRequest to transfer object.
+   *
+   * @param signUpRequest signUpRequest
+   * @return user dto
+   */
+  public static UserDto convertToUserDto(final SignUpRequest signUpRequest) {
+    var userDto = UserDtoMapper.MAPPER.toUserDto(signUpRequest);
+    Validate.notNull(userDto, UserConstants.USER_DTO_MUST_NOT_BE_NULL);
+    return userDto;
   }
 
   /**

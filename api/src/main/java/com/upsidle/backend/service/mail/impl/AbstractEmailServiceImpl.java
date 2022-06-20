@@ -2,6 +2,7 @@ package com.upsidle.backend.service.mail.impl;
 
 import com.upsidle.backend.service.mail.EmailService;
 import com.upsidle.constant.EmailConstants;
+import com.upsidle.constant.SecurityConstants;
 import com.upsidle.constant.user.PasswordConstants;
 import com.upsidle.constant.user.ProfileConstants;
 import com.upsidle.constant.user.SignUpConstants;
@@ -77,15 +78,16 @@ public abstract class AbstractEmailServiceImpl implements EmailService {
         prepareHtmlEmailRequest(
             userDto,
             token,
-            SignUpConstants.SIGN_UP_MAPPING + SignUpConstants.SIGN_UP_VERIFY_MAPPING,
+            SecurityConstants.API_V1_USERS_ROOT_URL + SignUpConstants.EMAIL_VERIFY_MAPPING,
             EmailConstants.EMAIL_VERIFY_TEMPLATE,
-            EmailConstants.CONFIRMATION_PENDING_EMAIL_SUBJECT);
+            EmailConstants.CONFIRMATION_PENDING_EMAIL_SUBJECT,
+            StringUtils.EMPTY);
     // prepare the email request then send it.
     sendHtmlEmail(prepareEmailRequest(emailRequest));
   }
 
   @Override
-  public void sendAccountConfirmationEmail(final UserDto userDto) {
+  public void sendAccountConfirmationEmail(final UserDto userDto, String baseUrl) {
     Validate.notNull(userDto, UserConstants.USER_DTO_MUST_NOT_BE_NULL);
 
     HtmlEmailRequest emailRequest =
@@ -94,7 +96,8 @@ public abstract class AbstractEmailServiceImpl implements EmailService {
             null,
             ProfileConstants.PROFILE_MAPPING,
             EmailConstants.EMAIL_WELCOME_TEMPLATE,
-            EmailConstants.CONFIRMATION_SUCCESS_EMAIL_SUBJECT);
+            EmailConstants.CONFIRMATION_SUCCESS_EMAIL_SUBJECT,
+            baseUrl);
     // prepare the email request then send it.
     sendHtmlEmail(prepareEmailRequest(emailRequest));
   }
@@ -109,7 +112,8 @@ public abstract class AbstractEmailServiceImpl implements EmailService {
             token,
             PasswordConstants.PASSWORD_RESET_ROOT_MAPPING + PasswordConstants.PASSWORD_CHANGE_PATH,
             EmailConstants.PASSWORD_RESET_TEMPLATE,
-            EmailConstants.PASSWORD_RESET_EMAIL_SUBJECT);
+            EmailConstants.PASSWORD_RESET_EMAIL_SUBJECT,
+            "");
     // prepare the email request then send it.
     sendHtmlEmail(prepareEmailRequest(emailRequest));
   }
@@ -124,7 +128,8 @@ public abstract class AbstractEmailServiceImpl implements EmailService {
             null,
             null,
             EmailConstants.PASSWORD_UPDATE_TEMPLATE,
-            EmailConstants.PASSWORD_RESET_SUCCESS_SUBJECT);
+            EmailConstants.PASSWORD_RESET_SUCCESS_SUBJECT,
+            "");
     // prepare the email request then send it.
     sendHtmlEmail(prepareEmailRequest(emailRequest));
   }
@@ -137,14 +142,23 @@ public abstract class AbstractEmailServiceImpl implements EmailService {
    * @param path the path
    * @param template the template
    * @param subject the subject
+   * @param baseUrl the baseUrl
    * @return the prepared htmlEmailRequest
    */
   private HtmlEmailRequest prepareHtmlEmailRequest(
-      UserDto userDto, String token, String path, String template, String subject) {
+      UserDto userDto, String token, String path, String template, String subject, String baseUrl) {
 
     // get the links used in the email
     Map<String, String> links = WebUtils.getDefaultEmailUrls();
-    if (StringUtils.isNotBlank(path) && StringUtils.isNotBlank(token)) {
+    if (StringUtils.isNotBlank(path)
+        && StringUtils.isNotBlank(baseUrl)
+        && StringUtils.isNotBlank(token)) {
+      links.put(
+          EmailConstants.EMAIL_LINK,
+          String.format("%s%s?%s=%s", baseUrl, path, WebUtils.TOKEN, token));
+    } else if (StringUtils.isNotBlank(path) && StringUtils.isNotBlank(baseUrl)) {
+      links.put(EmailConstants.EMAIL_LINK, String.format("%s%s", baseUrl, path));
+    } else if (StringUtils.isNotBlank(path) && StringUtils.isNotBlank(token)) {
       links.put(EmailConstants.EMAIL_LINK, WebUtils.getGenericUri(path, token));
     } else if (StringUtils.isNotBlank(path)) {
       links.put(EmailConstants.EMAIL_LINK, WebUtils.getGenericUri(path));

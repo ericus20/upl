@@ -1,6 +1,9 @@
 package com.upsidle.web.payload.request;
 
 import com.upsidle.constant.user.UserConstants;
+import com.upsidle.enums.RoleType;
+import java.util.HashSet;
+import java.util.Set;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -34,4 +37,6 @@ public final class SignUpRequest {
   @NotBlank(message = UserConstants.BLANK_PASSWORD)
   @Size(min = 4, max = 15, message = UserConstants.PASSWORD_SIZE)
   private String password;
+
+  private Set<RoleType> roles = new HashSet<>();
 }

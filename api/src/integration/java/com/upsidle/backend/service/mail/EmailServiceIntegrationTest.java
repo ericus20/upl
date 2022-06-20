@@ -196,7 +196,7 @@ class EmailServiceIntegrationTest extends IntegrationTestUtils {
     recipient = userDto.getEmail();
 
     // Send email verification
-    emailService.sendAccountConfirmationEmail(userDto);
+    emailService.sendAccountConfirmationEmail(userDto, StringUtils.EMPTY);
     assertEmailResponse(false);
   }
 

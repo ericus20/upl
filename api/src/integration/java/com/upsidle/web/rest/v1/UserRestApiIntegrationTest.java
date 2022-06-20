@@ -2,7 +2,6 @@ package com.upsidle.web.rest.v1;
 
 import com.upsidle.IntegrationTestUtils;
 import com.upsidle.TestUtils;
-import com.upsidle.constant.AdminConstants;
 import com.upsidle.constant.SecurityConstants;
 import com.upsidle.enums.OperationStatus;
 import com.upsidle.enums.TokenType;
@@ -60,7 +59,8 @@ class UserRestApiIntegrationTest extends IntegrationTestUtils {
     var accessToken = jwtResponse.getAccessToken();
     var bearerToken = getBearerToken(accessToken);
     var enableUrl =
-        String.format("%s/%s/enable", AdminConstants.API_V1_USERS_ROOT_URL, userDto.getPublicId());
+        String.format(
+            "%s/%s/enable", SecurityConstants.API_V1_USERS_ROOT_URL, userDto.getPublicId());
 
     performRequest(
             MockMvcRequestBuilders.put(enableUrl)
@@ -83,7 +83,7 @@ class UserRestApiIntegrationTest extends IntegrationTestUtils {
     var accessToken = jwtResponse.getAccessToken();
     var bearerToken = getBearerToken(accessToken);
     var enableUrl =
-        String.format("%s/%s/enable", AdminConstants.API_V1_USERS_ROOT_URL, UUID.randomUUID());
+        String.format("%s/%s/enable", SecurityConstants.API_V1_USERS_ROOT_URL, UUID.randomUUID());
 
     MvcResult result =
         performRequest(
@@ -106,7 +106,8 @@ class UserRestApiIntegrationTest extends IntegrationTestUtils {
     var jwtResponse = getJwtResponse();
 
     var disableUrl =
-        String.format("%s/%s/disable", AdminConstants.API_V1_USERS_ROOT_URL, userDto.getPublicId());
+        String.format(
+            "%s/%s/disable", SecurityConstants.API_V1_USERS_ROOT_URL, userDto.getPublicId());
 
     var accessToken = jwtResponse.getAccessToken();
     var bearerToken = String.format("%s %s", SecurityConstants.BEARER, accessToken);
@@ -129,7 +130,7 @@ class UserRestApiIntegrationTest extends IntegrationTestUtils {
 
     var accessToken = jwtResponse.getAccessToken();
     var disableUser =
-        String.format("%s/%s/disable", AdminConstants.API_V1_USERS_ROOT_URL, UUID.randomUUID());
+        String.format("%s/%s/disable", SecurityConstants.API_V1_USERS_ROOT_URL, UUID.randomUUID());
 
     MvcResult result =
         performRequest(
@@ -148,7 +149,7 @@ class UserRestApiIntegrationTest extends IntegrationTestUtils {
     // Endpoint: PUT /api/v1/users/{publicId}/enable
 
     var enableUrl =
-        String.format("%s/%s/enable", AdminConstants.API_V1_USERS_ROOT_URL, UUID.randomUUID());
+        String.format("%s/%s/enable", SecurityConstants.API_V1_USERS_ROOT_URL, UUID.randomUUID());
     mockMvc
         .perform(
             MockMvcRequestBuilders.put(enableUrl).with(SecurityMockMvcRequestPostProcessors.csrf()))
@@ -161,7 +162,7 @@ class UserRestApiIntegrationTest extends IntegrationTestUtils {
     // Endpoint: PUT /api/v1/users/{publicId}/enable
 
     var enableUrl =
-        String.format("%s/%s/disable", AdminConstants.API_V1_USERS_ROOT_URL, UUID.randomUUID());
+        String.format("%s/%s/disable", SecurityConstants.API_V1_USERS_ROOT_URL, UUID.randomUUID());
     mockMvc
         .perform(
             MockMvcRequestBuilders.put(enableUrl).with(SecurityMockMvcRequestPostProcessors.csrf()))
@@ -182,7 +183,7 @@ class UserRestApiIntegrationTest extends IntegrationTestUtils {
     var accessToken = jwtResponse.getAccessToken();
     var bearerToken = getBearerToken(accessToken);
     var enableUrl =
-        String.format("%s/%s", AdminConstants.API_V1_USERS_ROOT_URL, userDto.getPublicId());
+        String.format("%s/%s", SecurityConstants.API_V1_USERS_ROOT_URL, userDto.getPublicId());
 
     var result =
         performRequest(
@@ -202,7 +203,8 @@ class UserRestApiIntegrationTest extends IntegrationTestUtils {
   void deleteUserNoAuthorization() throws Exception {
     // Endpoint: PUT /api/v1/users/{publicId}/enable
 
-    var enableUrl = String.format("%s/%s", AdminConstants.API_V1_USERS_ROOT_URL, UUID.randomUUID());
+    var enableUrl =
+        String.format("%s/%s", SecurityConstants.API_V1_USERS_ROOT_URL, UUID.randomUUID());
     mockMvc
         .perform(
             MockMvcRequestBuilders.delete(enableUrl)

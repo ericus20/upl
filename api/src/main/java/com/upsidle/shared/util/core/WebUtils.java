@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.thymeleaf.util.StringUtils;
 
 /**
  * This utility class holds all common methods used in the web layer.
@@ -78,8 +79,12 @@ public final class WebUtils {
    * @return a dynamically formulated uri
    */
   public static String getUri(HttpServletRequest request) {
-    return ServletUriComponentsBuilder.fromOriginHeader(request.getHeader(HttpHeaders.ORIGIN))
-        .toUriString();
+    var origin = request.getHeader(HttpHeaders.ORIGIN);
+    if (StringUtils.isEmpty(origin)) {
+      return ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+    }
+
+    return ServletUriComponentsBuilder.fromOriginHeader(origin).toUriString();
   }
 
   /**

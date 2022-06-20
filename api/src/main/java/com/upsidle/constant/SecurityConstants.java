@@ -1,5 +1,10 @@
 package com.upsidle.constant;
 
+import com.upsidle.constant.user.PasswordConstants;
+import com.upsidle.constant.user.SignUpConstants;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,6 +19,7 @@ import org.springframework.http.HttpMethod;
 public final class SecurityConstants {
 
   public static final String API_V1_AUTH_ROOT_URL = "/api/v1/auth";
+  public static final String API_V1_USERS_ROOT_URL = "/api/v1/users";
   public static final String API_V1_AUTH_URL_MAPPING = "/api/v1/auth/**";
   public static final String API_ROOT_URL_MAPPING = "/api/**";
   public static final String BEARER = "Bearer";
@@ -57,7 +63,24 @@ public final class SecurityConstants {
           HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS,
           HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN);
 
+  private static final String[] PUBLIC_MATCHERS = {
+    ROOT_PATH,
+    SecurityConstants.API_V1_USERS_ROOT_URL + SignUpConstants.EMAIL_VERIFY_MAPPING + "/**",
+    String.join("/", SecurityConstants.LOGIN, "**"),
+    String.join("/", SignUpConstants.EMAIL_VERIFY_MAPPING, "**"),
+    String.join("/", PasswordConstants.PASSWORD_RESET_ROOT_MAPPING, "**"),
+  };
+
   private SecurityConstants() {
     throw new AssertionError(ErrorConstants.NOT_INSTANTIABLE);
+  }
+
+  /**
+   * Public matchers to allow access to the application.
+   *
+   * @return public matchers.
+   */
+  public static Collection<String> getPublicMatchers() {
+    return Collections.unmodifiableCollection(Arrays.asList(PUBLIC_MATCHERS));
   }
 }
