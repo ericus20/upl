@@ -69,6 +69,8 @@ module.exports = {
       },
     ],
     "no-nested-ternary": "off",
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": ["error"],
     "import/prefer-default-export": "off",
     "react/function-component-definition": [
       2,
@@ -80,6 +82,13 @@ module.exports = {
     "import/no-extraneous-dependencies": [
       "error",
       { devDependencies: ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"] },
+    ],
+    "no-param-reassign": [
+      "error",
+      {
+        props: true,
+        ignorePropertyModificationsFor: ["state"],
+      },
     ],
   },
 };
