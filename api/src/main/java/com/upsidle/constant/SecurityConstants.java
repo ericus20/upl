@@ -31,7 +31,6 @@ public final class SecurityConstants {
   public static final String REFRESH_TOKEN = "/refresh-token";
   public static final String ROOT_PATH = "/";
   public static final String SAME_SITE = "strict";
-  public static final String LOGIN_VIEW_NAME = "user/login";
   public static final int DEFAULT_TOKEN_DURATION = 7;
   public static final int SECURITY_STRENGTH = 12;
 
