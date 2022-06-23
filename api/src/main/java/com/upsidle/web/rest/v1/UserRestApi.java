@@ -17,14 +17,13 @@ import com.upsidle.exception.user.UserAlreadyExistsException;
 import com.upsidle.shared.dto.UserDto;
 import com.upsidle.shared.util.UserUtils;
 import com.upsidle.shared.util.core.SecurityUtils;
-import com.upsidle.shared.util.core.WebUtils;
 import com.upsidle.web.payload.request.SignUpRequest;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import java.util.Objects;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -55,8 +54,10 @@ public class UserRestApi {
   private final JwtService jwtService;
   private final UserService userService;
   private final EmailService emailService;
-  private final HttpServletRequest request;
   private final EncryptionService encryptionService;
+
+  @Value("${customerPortalUrl}")
+  private String customerPortalUrl;
 
   /**
    * Enables the user associated with the publicId.
@@ -145,9 +146,8 @@ public class UserRestApi {
     var verificationToken = encryptionService.decrypt(decodedToken);
 
     var userDto = validateTokenAndUpdateUser(verificationToken);
-    var baseUrl = WebUtils.getUri(request);
     // send an account confirmation to the user.
-    emailService.sendAccountConfirmationEmail(userDto, baseUrl);
+    emailService.sendAccountConfirmationEmail(userDto, customerPortalUrl);
 
     // automatically authenticate the userDto since there will be a redirection to profile page
     UserDetails userDetails = userService.getUserDetails(userDto.getUsername());
