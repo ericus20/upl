@@ -1,12 +1,11 @@
 import NextLink from "next/link";
 
-interface LinkProps {
+interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string;
   children?: React.ReactNode; // best, accepts everything React can render
-  props?: React.AnchorHTMLAttributes<HTMLAnchorElement>;
 }
 
-const Link: React.FC<LinkProps> = ({ href, children, props }) => {
+const Link: React.FC<LinkProps> = ({ children, href, ...props }) => {
   return (
     <NextLink href={href}>
       <a {...props}>{children}</a>

@@ -9,15 +9,19 @@ import {
 import { HYDRATE } from "next-redux-wrapper";
 // eslint-disable-next-line import/no-cycle
 import authReducer, { AuthState } from "app/slices/auth";
+// eslint-disable-next-line import/no-cycle
+import productReducer, { ProductState } from "app/slices/product";
 
 const combinedReducers = combineReducers({
   authReducer,
+  productReducer,
 });
 export type OurStore = ReturnType<typeof combinedReducers>;
 
 type RootState =
   | CombinedState<{
       authReducer: AuthState;
+      productReducer: ProductState;
     }>
   | undefined;
 

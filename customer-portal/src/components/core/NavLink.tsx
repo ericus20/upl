@@ -3,14 +3,18 @@ import { useRouter } from "next/router";
 import React from "react";
 import Link from "./Link";
 
-interface NavLinkProps {
+interface NavLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string;
   exact: boolean;
   children?: React.ReactNode; // best, accepts everything React can render
-  props?: React.AnchorHTMLAttributes<HTMLAnchorElement>;
 }
 
-const NavLink: React.FC<NavLinkProps> = ({ href, exact, children, props }) => {
+const NavLink: React.FC<NavLinkProps> = ({
+  href,
+  exact,
+  children,
+  ...props
+}) => {
   const { pathname } = useRouter();
 
   const classNames = classnames(props?.className, {
@@ -26,7 +30,6 @@ const NavLink: React.FC<NavLinkProps> = ({ href, exact, children, props }) => {
 
 NavLink.defaultProps = {
   children: null,
-  props: {},
 };
 
 export default NavLink;

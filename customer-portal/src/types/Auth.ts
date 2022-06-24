@@ -9,9 +9,9 @@ interface Auth {
   error?: SerializedError;
 }
 
-export const initialAuthState = {
+export const initialAuthState: Auth = {
   loading: AuthStatus.IDLE,
-  error: null,
+  error: undefined,
   user: initialUserState,
   isLoggedIn: false,
 };
