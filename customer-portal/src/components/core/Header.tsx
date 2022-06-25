@@ -6,13 +6,13 @@ import {
   UserCircleIcon,
 } from "@heroicons/react/outline";
 import { useAppSelector } from "app/hooks";
-import { selectProduct } from "app/slices/product";
+import { selectItem } from "app/slices/cart";
 import React, { useState } from "react";
 import Link from "./Link";
 
 const Header = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const products = useAppSelector(selectProduct);
+  const products = useAppSelector(selectItem);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     let term = e.target.value;

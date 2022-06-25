@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
   public UserDto createUser(UserDto userDto, Set<RoleType> roleTypes) {
     Validate.notNull(userDto, UserConstants.USER_DTO_MUST_NOT_BE_NULL);
 
-    var localUser = userRepository.findByEmail(userDto.getEmail());
+    var localUser = userRepository.findByUsernameOrEmail(userDto.getUsername(), userDto.getEmail());
     if (Objects.nonNull(localUser)) {
       if (!localUser.isEnabled()) {
         LOG.debug(UserConstants.USER_EXIST_BUT_NOT_ENABLED, userDto.getEmail(), localUser);
