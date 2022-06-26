@@ -1,6 +1,7 @@
 import {
   createAsyncThunk,
   createSlice,
+  isAnyOf,
   PayloadAction,
   SerializedError,
 } from "@reduxjs/toolkit";
@@ -11,15 +12,16 @@ import {
 // and then re-import the RootState type back into a slice file.
 // eslint-disable-next-line import/no-cycle
 import { AppState } from "app/store";
+import axios, { AxiosRequestConfig } from "axios";
 import AuthStatus from "enums/AuthStatus";
 import axiosInstance from "libs/axios";
 import routes from "routes";
 import Auth from "types/Auth";
+import JwtResponse, { initialJwtResponseState } from "types/JwtResponse";
 import LoginRequest from "types/LoginRequest";
-import User, { initialUserState } from "types/User";
 
 export interface AuthState {
-  user: User;
+  principal: JwtResponse;
   isLoggedIn: boolean;
   loading: AuthStatus;
   error?: SerializedError;
@@ -28,7 +30,7 @@ export interface AuthState {
 export const initialAuthState: AuthState = {
   loading: AuthStatus.IDLE,
   error: undefined,
-  user: initialUserState,
+  principal: initialJwtResponseState,
   isLoggedIn: false,
 };
 
@@ -36,10 +38,18 @@ export const login = createAsyncThunk(
   "auth/login",
   async (credentials: LoginRequest, thunkAPI) => {
     try {
-      const response = await axiosInstance.post<User>(
-        routes.api.login,
-        credentials
-      );
+      const requestOptions: AxiosRequestConfig<string> = {
+        baseURL: routes.api.base,
+        url: routes.api.login,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        withCredentials: true,
+        data: JSON.stringify(credentials),
+      };
+      const response = await axios.request<JwtResponse>(requestOptions);
 
       return response.data;
     } catch (error) {
@@ -52,7 +62,9 @@ export const refreshToken = createAsyncThunk(
   "auth/refreshToken",
   async (_, thunkAPI) => {
     try {
-      const response = await axiosInstance.get<User>(routes.api.refreshToken);
+      const response = await axiosInstance.get<JwtResponse>(
+        routes.api.refreshToken
+      );
 
       return response.data;
     } catch (error) {
@@ -77,10 +89,45 @@ export const authSlice = createSlice({
   name: "auth",
   initialState: initialAuthState,
   reducers: {
-    updateAuth: (state: Auth, action: PayloadAction<{ user: User }>) => {
-      state.user = action.payload.user;
+    updateAuth: (
+      state: Auth,
+      action: PayloadAction<{ principal: JwtResponse }>
+    ) => {
+      state.principal = action.payload.principal;
     },
     reset: () => initialAuthState,
+  },
+  extraReducers: builder => {
+    builder.addCase(logout.pending, state => {
+      state.loading = AuthStatus.LOADING;
+    });
+    builder.addCase(logout.fulfilled, state => {
+      state.loading = AuthStatus.IDLE;
+      return initialAuthState;
+    });
+    builder.addMatcher(isAnyOf(login.pending, refreshToken.pending), state => {
+      state.loading = AuthStatus.LOADING;
+    });
+    builder.addMatcher(
+      isAnyOf(login.fulfilled, refreshToken.fulfilled),
+      (state: Auth, action: PayloadAction<JwtResponse>) => {
+        console.log("login fulfilled called");
+
+        state.principal = action.payload;
+        state.isLoggedIn = !!action.payload.accessToken;
+        state.loading = AuthStatus.IDLE;
+      }
+    );
+    builder.addMatcher(
+      isAnyOf(login.rejected, refreshToken.rejected),
+      (state, action) => {
+        Object.assign(state, {
+          ...initialAuthState,
+          loading: AuthStatus.FAILED,
+          error: action.error,
+        });
+      }
+    );
   },
 });
 

@@ -1,3 +1,6 @@
+/* eslint-disable import/no-cycle */
+import { updateAuth } from "app/slices/auth";
+import store, { AppDispatch } from "app/store";
 import axios from "axios";
 import createAuthRefreshInterceptor from "axios-auth-refresh";
 import cookie from "cookie";
@@ -13,6 +16,9 @@ const axiosInstance = axios.create({
 createAuthRefreshInterceptor(axiosInstance, failedRequest =>
   // 1. First try request fails - refresh the token.
   axiosInstance.get("/api/refreshToken").then(resp => {
+    const { dispatch }: { dispatch: AppDispatch } = store;
+    const principal = resp.data;
+    dispatch(updateAuth({ principal }));
     // 1a. Clear old helper cookie used in 'authorize.ts' higher order function.
     if (axiosInstance.defaults.headers.common.setCookie) {
       delete axiosInstance.defaults.headers.common.setCookie;
@@ -44,3 +50,6 @@ createAuthRefreshInterceptor(axiosInstance, failedRequest =>
 );
 
 export default axiosInstance;
+function updateAuthState(arg0: { principal: any }): any {
+  throw new Error("Function not implemented.");
+}

@@ -1,9 +1,9 @@
 import { SerializedError } from "@reduxjs/toolkit";
 import AuthStatus from "enums/AuthStatus";
-import User, { initialUserState } from "./User";
+import JwtResponse, { initialJwtResponseState } from "./JwtResponse";
 
 interface Auth {
-  user: User;
+  principal: JwtResponse;
   isLoggedIn: boolean;
   loading: AuthStatus;
   error?: SerializedError;
@@ -12,7 +12,7 @@ interface Auth {
 export const initialAuthState: Auth = {
   loading: AuthStatus.IDLE,
   error: undefined,
-  user: initialUserState,
+  principal: initialJwtResponseState,
   isLoggedIn: false,
 };
 

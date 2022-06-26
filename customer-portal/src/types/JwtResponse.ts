@@ -1,10 +1,10 @@
-type JwtResponse = {
+interface JwtResponse {
   accessToken: string;
   publicId: string;
   username: string;
   email: string;
   roles: string[];
-};
+}
 
 export const initialJwtResponseState: JwtResponse = {
   accessToken: "",

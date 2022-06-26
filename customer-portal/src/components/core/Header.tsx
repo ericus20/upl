@@ -71,10 +71,12 @@ const Header = () => {
             <p className="md:text-sm">Wish List</p>
           </div>
 
-          <div className="link flex items-center space-x-2">
-            <UserCircleIcon className="h-6" />
-            <p className="md:text-sm">Sign In</p>
-          </div>
+          <Link href="/login">
+            <div className="link flex items-center space-x-2">
+              <UserCircleIcon className="h-6" />
+              <p className="md:text-sm">Sign In</p>
+            </div>
+          </Link>
         </div>
       </div>
 

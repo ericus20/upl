@@ -3,6 +3,7 @@
  */
 const routes = {
   api: {
+    base: "http://localhost:8080",
     login: "/api/v1/auth/login",
     logout: "/api/v1/auth/logout",
     refreshToken: "/api/v1/auth/refresh-token",

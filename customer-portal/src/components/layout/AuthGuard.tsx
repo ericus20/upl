@@ -15,7 +15,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
   message,
   children,
 }) => {
-  const { loading, user } = useAppSelector(selectAuth);
+  const { loading, principal: user } = useAppSelector(selectAuth);
 
   if (loading === AuthStatus.LOADING) {
     return <>loading...</>;

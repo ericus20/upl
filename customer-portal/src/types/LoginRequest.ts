@@ -1,9 +1,9 @@
-type LoginRequest = {
+interface LoginRequest {
   username: string;
   password: string;
-};
+}
 
-export const initialUserState: LoginRequest = {
+export const initialLoginRequestState: LoginRequest = {
   username: "",
   password: "",
 };
