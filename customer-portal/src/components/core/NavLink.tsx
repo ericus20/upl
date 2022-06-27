@@ -5,7 +5,7 @@ import Link from "./Link";
 
 interface NavLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string;
-  exact: boolean;
+  exact?: boolean;
   children?: React.ReactNode; // best, accepts everything React can render
 }
 
@@ -29,6 +29,7 @@ const NavLink: React.FC<NavLinkProps> = ({
 };
 
 NavLink.defaultProps = {
+  exact: false,
   children: null,
 };
 

@@ -14,8 +14,10 @@ import {
 import { AppState } from "app/store";
 import axios, { AxiosRequestConfig } from "axios";
 import AuthStatus from "enums/AuthStatus";
+// eslint-disable-next-line import/no-cycle
 import axiosInstance from "libs/axios";
 import routes from "routes";
+import { alertService } from "services/alert.service";
 import Auth from "types/Auth";
 import JwtResponse, { initialJwtResponseState } from "types/JwtResponse";
 import LoginRequest from "types/LoginRequest";
@@ -111,8 +113,6 @@ export const authSlice = createSlice({
     builder.addMatcher(
       isAnyOf(login.fulfilled, refreshToken.fulfilled),
       (state: Auth, action: PayloadAction<JwtResponse>) => {
-        console.log("login fulfilled called");
-
         state.principal = action.payload;
         state.isLoggedIn = !!action.payload.accessToken;
         state.loading = AuthStatus.IDLE;
@@ -126,6 +126,10 @@ export const authSlice = createSlice({
           loading: AuthStatus.FAILED,
           error: action.error,
         });
+
+        if (action.error.message) {
+          alertService.error("Login Failed", { id: "login-alert" });
+        }
       }
     );
   },

@@ -1,12 +1,12 @@
 import AlertType from "enums/AlertType";
-import { filter, Subject } from "rxjs";
+import { Subject } from "rxjs";
+import { filter } from "rxjs/operators";
 
 export interface AlertBody {
   id?: string;
-  autoClose?: boolean;
-  options?: object;
-  type?: AlertType;
   message?: string;
+  autoClose?: boolean;
+  type?: AlertType;
   fade?: boolean;
   keepAfterRouteChange?: boolean;
 }
@@ -15,36 +15,38 @@ const alertSubject = new Subject<AlertBody>();
 const defaultId = "default-alert";
 
 // enable subscribing to alerts observable
-const onAlert = (id: string = defaultId) => {
+const onAlert = (id = defaultId) => {
   return alertSubject.asObservable().pipe(filter(x => x && x.id === id));
 };
 
 // core alert method
-const alert = (thisAlert: AlertBody) => {
+const sendAlert = (alert: AlertBody) => {
   alertSubject.next({
-    id: thisAlert.id || defaultId,
-    autoClose: thisAlert.autoClose === undefined ? true : thisAlert.autoClose,
+    id: alert.id || defaultId,
+    autoClose: alert.autoClose === undefined ? true : alert.autoClose,
+    ...alert,
   });
 };
 
+// convenience methods
 const success = (message: string, options: object) => {
-  alert({ ...options, type: AlertType.SUCCESS, message });
-};
-
-const info = (message: string, options: object) => {
-  alert({ ...options, type: AlertType.INFO, message });
-};
-
-const warn = (message: string, options: object) => {
-  alert({ ...options, type: AlertType.WARNING, message });
+  sendAlert({ ...options, type: AlertType.Success, message });
 };
 
 const error = (message: string, options: object) => {
-  alert({ ...options, type: AlertType.ERROR, message });
+  sendAlert({ ...options, type: AlertType.Error, message });
+};
+
+const info = (message: string, options: object) => {
+  sendAlert({ ...options, type: AlertType.Info, message });
+};
+
+const warn = (message: string, options: object) => {
+  sendAlert({ ...options, type: AlertType.Warning, message });
 };
 
 // clear alerts
-const clear = (id: string = defaultId) => {
+const clear = (id = defaultId) => {
   alertSubject.next({ id });
 };
 
@@ -54,6 +56,6 @@ export const alertService = {
   error,
   info,
   warn,
-  alert,
+  alert: sendAlert,
   clear,
 };

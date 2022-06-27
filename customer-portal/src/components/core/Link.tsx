@@ -1,7 +1,6 @@
-import NextLink from "next/link";
+import NextLink, { LinkProps as ExternalLinkProps } from "next/link";
 
-interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
-  href: string;
+interface LinkProps extends ExternalLinkProps {
   children?: React.ReactNode; // best, accepts everything React can render
 }
 

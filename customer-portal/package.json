@@ -31,6 +31,7 @@
     "redux": "^4.2.0",
     "rxjs": "^7.5.5",
     "set-cookie-parser": "^2.5.0",
+    "uuid": "^8.3.2",
     "yup": "^0.32.11"
   },
   "devDependencies": {
@@ -42,6 +43,7 @@
     "@types/react-dom": "18.0.5",
     "@types/react-redux": "^7.1.24",
     "@types/set-cookie-parser": "^2.4.2",
+    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.27.1",
     "@typescript-eslint/parser": "^5.27.1",
     "autoprefixer": "^10.4.7",

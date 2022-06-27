@@ -4,6 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useAppDispatch } from "app/hooks";
 import { login } from "app/slices/auth";
 import { AppDispatch } from "app/store";
+import Alert from "components/core/Alert";
 import Spinner from "components/core/Spinner";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
@@ -36,7 +37,8 @@ const Login = () => {
 
   return (
     <div className="flex m-auto mt-20 justify-center items-center">
-      <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-md sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
+      <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-md sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700 w-1/4">
+        <Alert id="login-alert" />
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <h5 className="text-xl font-medium text-gray-900 dark:text-white">
             Sign in
@@ -55,7 +57,7 @@ const Login = () => {
               className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white form-control ${
                 errors.username ? "outline-red-500" : ""
               }`}
-              placeholder="name@company.com"
+              placeholder="username/email"
             />
             <div className="text-red-500">{errors.username?.message}</div>
           </div>
@@ -70,7 +72,7 @@ const Login = () => {
               type="password"
               {...register("password")}
               id="password"
-              placeholder="••••••••"
+              placeholder="password"
               className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white ${
                 errors.password ? "outline-red-500" : ""
               }`}
