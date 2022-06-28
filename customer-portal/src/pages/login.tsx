@@ -6,9 +6,10 @@ import { login } from "app/slices/auth";
 import { AppDispatch } from "app/store";
 import Alert from "components/core/Alert";
 import Spinner from "components/core/Spinner";
+import AlertId from "enums/AlertId";
+import LoginRequest from "models/LoginRequest";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import LoginRequest from "types/LoginRequest";
 import * as Yup from "yup";
 
 const Login = () => {
@@ -38,7 +39,7 @@ const Login = () => {
   return (
     <div className="flex m-auto mt-20 justify-center items-center">
       <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-md sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700 w-1/4">
-        <Alert id="login-alert" />
+        <Alert id={AlertId.LOGIN} />
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <h5 className="text-xl font-medium text-gray-900 dark:text-white">
             Sign in
@@ -48,7 +49,7 @@ const Login = () => {
               htmlFor="username"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
             >
-              Your username
+              Username or Email
             </label>
             <input
               id="username"
@@ -66,13 +67,13 @@ const Login = () => {
               htmlFor="password"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
             >
-              Your password
+              Email or Password
             </label>
             <input
               type="password"
               {...register("password")}
               id="password"
-              placeholder="password"
+              placeholder="*****"
               className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white ${
                 errors.password ? "outline-red-500" : ""
               }`}

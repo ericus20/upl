@@ -6,6 +6,7 @@ const routes = {
     base: "http://localhost:8080",
     login: "/api/v1/auth/login",
     logout: "/api/v1/auth/logout",
+    users: "/api/v1/users",
     refreshToken: "/api/v1/auth/refresh-token",
   },
 };

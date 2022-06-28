@@ -1,7 +1,7 @@
 import Header from "components/core/Header";
+import Product from "models/Product";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import Product from "types/Product";
 
 const Home: NextPage<{ products: Product[] }> = () => {
   return (

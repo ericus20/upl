@@ -13,24 +13,25 @@ import {
 // eslint-disable-next-line import/no-cycle
 import { AppState } from "app/store";
 import axios, { AxiosRequestConfig } from "axios";
-import AuthStatus from "enums/AuthStatus";
+import AlertId from "enums/AlertId";
+import Status from "enums/Status";
 // eslint-disable-next-line import/no-cycle
 import axiosInstance from "libs/axios";
+import Auth from "models/Auth";
+import JwtResponse, { initialJwtResponseState } from "models/JwtResponse";
+import LoginRequest from "models/LoginRequest";
 import routes from "routes";
 import { alertService } from "services/alert.service";
-import Auth from "types/Auth";
-import JwtResponse, { initialJwtResponseState } from "types/JwtResponse";
-import LoginRequest from "types/LoginRequest";
 
 export interface AuthState {
   principal: JwtResponse;
   isLoggedIn: boolean;
-  loading: AuthStatus;
+  loading: Status;
   error?: SerializedError;
 }
 
 export const initialAuthState: AuthState = {
-  loading: AuthStatus.IDLE,
+  loading: Status.IDLE,
   error: undefined,
   principal: initialJwtResponseState,
   isLoggedIn: false,
@@ -55,6 +56,10 @@ export const login = createAsyncThunk(
 
       return response.data;
     } catch (error) {
+      // Trigger alert for the failed login attempt.
+      alertService.error("Login Failed", {
+        id: AlertId.LOGIN,
+      });
       return thunkAPI.rejectWithValue({ error });
     }
   }
@@ -100,22 +105,22 @@ export const authSlice = createSlice({
     reset: () => initialAuthState,
   },
   extraReducers: builder => {
-    builder.addCase(logout.pending, state => {
-      state.loading = AuthStatus.LOADING;
-    });
     builder.addCase(logout.fulfilled, state => {
-      state.loading = AuthStatus.IDLE;
+      state.loading = Status.IDLE;
       return initialAuthState;
     });
-    builder.addMatcher(isAnyOf(login.pending, refreshToken.pending), state => {
-      state.loading = AuthStatus.LOADING;
-    });
+    builder.addMatcher(
+      isAnyOf(login.pending, refreshToken.pending, logout.pending),
+      state => {
+        state.loading = Status.LOADING;
+      }
+    );
     builder.addMatcher(
       isAnyOf(login.fulfilled, refreshToken.fulfilled),
       (state: Auth, action: PayloadAction<JwtResponse>) => {
         state.principal = action.payload;
         state.isLoggedIn = !!action.payload.accessToken;
-        state.loading = AuthStatus.IDLE;
+        state.loading = Status.IDLE;
       }
     );
     builder.addMatcher(
@@ -123,13 +128,9 @@ export const authSlice = createSlice({
       (state, action) => {
         Object.assign(state, {
           ...initialAuthState,
-          loading: AuthStatus.FAILED,
+          loading: Status.FAILED,
           error: action.error,
         });
-
-        if (action.error.message) {
-          alertService.error("Login Failed", { id: "login-alert" });
-        }
       }
     );
   },

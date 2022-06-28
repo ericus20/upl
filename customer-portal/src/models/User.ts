@@ -1,13 +1,11 @@
 interface User {
-  accessToken: string;
   publicId: string;
   username: string;
   email: string;
   roles: string[];
 }
 
-export const initialUserState: User = {
-  accessToken: "",
+export const initialUser: User = {
   publicId: "",
   username: "",
   email: "",

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // eslint-disable-next-line import/no-cycle
 import { AppState } from "app/store";
-import Item from "types/item";
+import Item from "models/item";
 
 export interface CartState {
   items: Item[];

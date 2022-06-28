@@ -29,19 +29,19 @@ const sendAlert = (alert: AlertBody) => {
 };
 
 // convenience methods
-const success = (message: string, options: object) => {
+const success = (message: string, options: AlertBody) => {
   sendAlert({ ...options, type: AlertType.Success, message });
 };
 
-const error = (message: string, options: object) => {
+const error = (message: string, options: AlertBody) => {
   sendAlert({ ...options, type: AlertType.Error, message });
 };
 
-const info = (message: string, options: object) => {
+const info = (message: string, options: AlertBody) => {
   sendAlert({ ...options, type: AlertType.Info, message });
 };
 
-const warn = (message: string, options: object) => {
+const warn = (message: string, options: AlertBody) => {
   sendAlert({ ...options, type: AlertType.Warning, message });
 };
 

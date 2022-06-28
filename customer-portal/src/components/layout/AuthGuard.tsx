@@ -1,53 +1,63 @@
 import { useAppSelector } from "app/hooks";
 import { selectAuth } from "app/slices/auth";
-import Login from "components/Login";
-import AuthStatus from "enums/AuthStatus";
 import RoleType from "enums/RoleType";
+import Status from "enums/Status";
+import Link from "next/link";
 
 interface AuthGuardProps {
   rolesAllowed?: string[];
-  message?: string;
-  children?: React.ReactNode; // best, accepts everything React can render
+  customText?: React.ReactNode;
+  children: React.ReactNode; // best, accepts everything React can render
 }
 
 const AuthGuard: React.FC<AuthGuardProps> = ({
   rolesAllowed,
-  message,
+  customText,
   children,
 }) => {
-  const { loading, principal: user } = useAppSelector(selectAuth);
+  const { loading, isLoggedIn, principal: user } = useAppSelector(selectAuth);
 
-  if (loading === AuthStatus.LOADING) {
+  if (loading === Status.LOADING) {
     return <>loading...</>;
   }
 
+  // If no role restrictions are provided and user is logged in OR
+  // if user is logged in and user has roles specified to be permitted
   if (
-    user &&
-    user.roles &&
-    user.roles.some(role => rolesAllowed?.includes(role))
+    (!rolesAllowed && isLoggedIn) ||
+    (isLoggedIn &&
+      user &&
+      user.roles &&
+      user.roles.some(role => rolesAllowed?.includes(role)))
   ) {
     // eslint-disable-next-line react/jsx-no-useless-fragment
     return <>{children}</>;
   }
 
-  return message ? (
-    <section>
+  return (
+    <section className="m-auto mt-20 justify-center items-center">
       <h2 className="text-center">Unauthorized</h2>
       <div className="text-center">
-        {message ||
-          "You don't have permission to access this page. Please contact an admin."}
+        {customText}
+
+        <p className="text-72 mb-24">
+          <Link
+            className="link text-primary underline cursor-pointer"
+            href="/login"
+          >
+            Click here
+          </Link>{" "}
+          to login
+        </p>
       </div>
     </section>
-  ) : (
-    <Login />
   );
 };
 
 AuthGuard.defaultProps = {
-  rolesAllowed: [RoleType.USER],
-  message:
+  rolesAllowed: [RoleType.USER, RoleType.ADMIN],
+  customText:
     "You don't have permission to access this page. Please contact an admin.",
-  children: null,
 };
 
 export default AuthGuard;
