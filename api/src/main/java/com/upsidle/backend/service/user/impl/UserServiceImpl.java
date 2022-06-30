@@ -62,6 +62,7 @@ public class UserServiceImpl implements UserService {
   @Transactional
   public UserDto saveOrUpdate(User user, boolean isUpdate) {
     Validate.notNull(user, UserConstants.USER_MUST_NOT_BE_NULL);
+
     User persistedUser = isUpdate ? userRepository.saveAndFlush(user) : userRepository.save(user);
     LOG.debug(UserConstants.USER_PERSISTED_SUCCESSFULLY, persistedUser);
 
@@ -208,6 +209,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public boolean existsByEmail(String email) {
     Validate.notNull(email, UserConstants.BLANK_EMAIL);
+
     return userRepository.existsByEmailOrderById(email);
   }
 
@@ -251,8 +253,9 @@ public class UserServiceImpl implements UserService {
   @Transactional
   @Caching(
       evict = {
+        @CacheEvict(value = CacheConstants.USERS, key = "#userDto.email"),
         @CacheEvict(value = CacheConstants.USERS, key = "#userDto.publicId"),
-        @CacheEvict(value = CacheConstants.USERS, key = "#userDto.email")
+        @CacheEvict(value = CacheConstants.USER_DETAILS, key = "#userDto.email")
       })
   public UserDto updateUser(UserDto userDto, UserHistoryType userHistoryType) {
     Validate.notNull(userDto, UserConstants.USER_DTO_MUST_NOT_BE_NULL);
@@ -272,7 +275,7 @@ public class UserServiceImpl implements UserService {
   @Transactional
   @Caching(
       evict = {
-        @CacheEvict(value = CacheConstants.USERS),
+        @CacheEvict(value = CacheConstants.USERS, allEntries = true),
         @CacheEvict(value = CacheConstants.USER_DETAILS, allEntries = true)
       })
   public UserDto enableUser(String publicId) {
@@ -301,7 +304,7 @@ public class UserServiceImpl implements UserService {
   @Transactional
   @Caching(
       evict = {
-        @CacheEvict(value = CacheConstants.USERS),
+        @CacheEvict(value = CacheConstants.USERS, allEntries = true),
         @CacheEvict(value = CacheConstants.USER_DETAILS, allEntries = true)
       })
   public UserDto disableUser(String publicId) {
@@ -325,6 +328,11 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   @Transactional
+  @Caching(
+      evict = {
+        @CacheEvict(value = CacheConstants.USERS, allEntries = true),
+        @CacheEvict(value = CacheConstants.USER_DETAILS, allEntries = true)
+      })
   public void deleteUser(String publicId) {
     ValidationUtils.validateInputsWithMessage(UserConstants.BLANK_PUBLIC_ID, publicId);
 

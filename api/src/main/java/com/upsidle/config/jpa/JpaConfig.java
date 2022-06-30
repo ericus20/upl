@@ -47,7 +47,7 @@ public class JpaConfig {
    */
   @Bean
   public CacheManager cacheManager() {
-    SimpleCacheManager cacheManager = new SimpleCacheManager();
+    var cacheManager = new SimpleCacheManager();
     cacheManager.setCaches(
         List.of(
             new ConcurrentMapCache(CacheConstants.USERS),

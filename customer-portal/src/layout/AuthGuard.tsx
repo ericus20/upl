@@ -43,11 +43,11 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
         <p className="text-72 mb-24">
           <Link
             className="link text-primary underline cursor-pointer"
-            href="/login"
+            href="/contact"
           >
             Click here
           </Link>{" "}
-          to login
+          to get started
         </p>
       </div>
     </section>

@@ -1,6 +1,6 @@
 import { SerializedError } from "@reduxjs/toolkit";
 import Status from "enums/Status";
-import JwtResponse, { initialJwtResponseState } from "./JwtResponse";
+import JwtResponse, { initialJwtResponseState } from "./response/JwtResponse";
 
 interface Auth {
   principal: JwtResponse;

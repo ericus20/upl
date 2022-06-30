@@ -18,8 +18,10 @@ import Status from "enums/Status";
 // eslint-disable-next-line import/no-cycle
 import axiosInstance from "libs/axios";
 import Auth from "models/Auth";
-import JwtResponse, { initialJwtResponseState } from "models/JwtResponse";
-import LoginRequest from "models/LoginRequest";
+import LoginRequest from "models/request/LoginRequest";
+import JwtResponse, {
+  initialJwtResponseState,
+} from "models/response/JwtResponse";
 import routes from "routes";
 import { alertService } from "services/alert.service";
 
@@ -121,6 +123,7 @@ export const authSlice = createSlice({
         state.principal = action.payload;
         state.isLoggedIn = !!action.payload.accessToken;
         state.loading = Status.IDLE;
+        state.error = undefined;
       }
     );
     builder.addMatcher(

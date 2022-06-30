@@ -1,10 +1,10 @@
 interface LoginRequest {
-  username: string;
+  email: string;
   password: string;
 }
 
 export const initialLoginRequestState: LoginRequest = {
-  username: "",
+  email: "",
   password: "",
 };
 

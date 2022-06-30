@@ -1,7 +1,7 @@
 interface JwtResponse {
   accessToken: string;
   publicId: string;
-  username: string;
+  name: string;
   type: string;
   email: string;
   roles: string[];
@@ -10,7 +10,7 @@ interface JwtResponse {
 export const initialJwtResponseState: JwtResponse = {
   accessToken: "",
   publicId: "",
-  username: "",
+  name: "",
   type: "",
   email: "",
   roles: [],

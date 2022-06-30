@@ -42,7 +42,7 @@ class UserDetailsServiceImpl implements UserDetailsService {
    *     GrantedAuthority
    */
   @Override
-  @Cacheable(key = "{ #root.methodName, #email }", value = CacheConstants.USER_DETAILS)
+  @Cacheable(CacheConstants.USER_DETAILS)
   public UserDetails loadUserByUsername(final String email) {
     // Ensure that email is not empty or null.
     if (StringUtils.isNotBlank(email)) {

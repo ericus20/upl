@@ -28,7 +28,7 @@ public class JwtResponseBuilder implements Serializable {
   private String accessToken;
   private String type;
   private String publicId;
-  private String username;
+  private String name;
   private String email;
 
   @EqualsAndHashCode.Exclude private List<String> roles;
@@ -66,7 +66,7 @@ public class JwtResponseBuilder implements Serializable {
       return JwtResponseBuilder.builder()
           .accessToken(jwToken)
           .email(localUserDetails.getEmail())
-          .username(localUserDetails.getUsername())
+          .name(localUserDetails.getName())
           .publicId(localUserDetails.getPublicId())
           .type(SecurityConstants.BEARER)
           .roles(roleList)

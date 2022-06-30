@@ -6,9 +6,9 @@ import {
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import AlertId from "enums/AlertId";
 import Status from "enums/Status";
-import ErrorResponse from "models/ErrorResponse";
-import JwtResponse from "models/JwtResponse";
-import SignUpRequest from "models/SignUpRequest";
+import SignUpRequest from "models/request/SignUpRequest";
+import ErrorResponse from "models/response/ErrorResponse";
+import JwtResponse from "models/response/JwtResponse";
 import User from "models/User";
 import routes from "routes";
 import { alertService } from "services";
@@ -77,6 +77,7 @@ export const userSlice = createSlice({
       })
       .addCase(signUp.fulfilled, state => {
         state.loading = Status.IDLE;
+        state.error = undefined;
       })
       .addCase(signUp.rejected, (state, action) => {
         Object.assign(state, {

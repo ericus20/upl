@@ -1,6 +1,8 @@
 import { useAppDispatch, useAppSelector } from "app/hooks";
 import { refreshToken, selectAuth } from "app/slices/auth";
 import { AppDispatch } from "app/store";
+import Header from "components/core/Header";
+import Head from "next/head";
 import { useEffect } from "react";
 
 interface LayoutProps {
@@ -24,6 +26,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div>
+      <Head>
+        <title>Upsidle</title>
+        <meta
+          name="description"
+          content="This is a springboot project for an e-commerce website."
+        />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      <Header />
       <main>{children}</main>
     </div>
   );

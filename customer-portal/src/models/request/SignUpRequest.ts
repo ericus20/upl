@@ -1,7 +1,7 @@
 import RoleType from "enums/RoleType";
 
 interface SignUpRequest {
-  username: string;
+  name: string;
   email: string;
   password: string;
   passwordConfirm: string;
@@ -9,7 +9,7 @@ interface SignUpRequest {
 }
 
 export const initialSignUp: SignUpRequest = {
-  username: "",
+  name: "",
   email: "",
   password: "",
   passwordConfirm: "",

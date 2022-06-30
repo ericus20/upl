@@ -1,5 +1,6 @@
 package com.upsidle.web.payload.response;
 
+import com.upsidle.TestUtils;
 import com.upsidle.backend.persistent.domain.user.Role;
 import com.upsidle.backend.persistent.domain.user.UserRole;
 import com.upsidle.backend.service.impl.UserDetailsBuilder;
@@ -12,7 +13,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
 /**
  * Test JwtResponse builder class.
@@ -21,7 +21,7 @@ import org.junit.jupiter.api.TestInfo;
  * @version 1.0
  * @since 1.0
  */
-class JwtResponseBuilderTest {
+class JwtResponseBuilderTest extends TestUtils {
 
   private transient UserDetailsBuilder userDetailsBuilder;
   private static final String JWT_TOKEN =
@@ -59,8 +59,9 @@ class JwtResponseBuilderTest {
   }
 
   @Test
-  void givenJwtTokenAndUserDetailsShouldBuildSuccessfully(TestInfo testInfo) {
-    var user = UserUtils.createUser(testInfo.getDisplayName());
+  void givenJwtTokenAndUserDetailsShouldBuildSuccessfully() {
+    var email = FAKER.internet().emailAddress();
+    var user = UserUtils.createUser(email);
     user.addUserRole(user, new Role(RoleType.ROLE_USER));
 
     var userDetails = UserDetailsBuilder.buildUserDetails(user);
@@ -69,6 +70,7 @@ class JwtResponseBuilderTest {
     Assertions.assertAll(
         () -> {
           Assertions.assertEquals(JWT_TOKEN, jwtResponse.getAccessToken());
+          Assertions.assertEquals(user.getName(), jwtResponse.getName());
           Assertions.assertEquals(user.getEmail(), jwtResponse.getEmail());
           Assertions.assertEquals(SecurityConstants.BEARER, jwtResponse.getType());
 

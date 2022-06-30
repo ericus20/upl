@@ -112,7 +112,7 @@ public class UserRestApi {
       LOG.warn(UserConstants.EMAIL_EXITS);
       throw new UserAlreadyExistsException(UserConstants.EMAIL_EXITS);
     }
-    var verificationToken = jwtService.generateJwtToken(userDto.getPublicId());
+    var verificationToken = jwtService.generateJwtToken(userDto.getEmail());
     userDto.setVerificationToken(verificationToken);
 
     var savedUserDto = userService.createUser(userDto, user.getRoles());
@@ -172,12 +172,12 @@ public class UserRestApi {
    */
   private UserDto validateTokenAndUpdateUser(final String token) {
     if (jwtService.isValidJwtToken(token)) {
-      var publicId = jwtService.getEmailFromToken(token);
-      var userDto = userService.findByPublicId(publicId);
+      var email = jwtService.getEmailFromToken(token);
+      var userDto = userService.findByEmail(email);
 
       if (Objects.nonNull(userDto)
           && token.equals(userDto.getVerificationToken())
-          && isTokenOwnerAndNotEnabled(publicId, userDto)) {
+          && isTokenOwnerAndNotEnabled(email, userDto)) {
         return userService.updateUser(userDto, UserHistoryType.VERIFIED);
       }
     }
@@ -189,15 +189,15 @@ public class UserRestApi {
   /**
    * Checks if the token owner is the same as the userDto and if the user is not enabled.
    *
-   * @param publicId the publicId
+   * @param email the email
    * @param userDto the user dto
    * @return if the token owner is the same as the userDto and if the user is not enabled
    */
-  private boolean isTokenOwnerAndNotEnabled(String publicId, UserDto userDto) {
-    if (userDto.getPublicId().equals(publicId) && userDto.isEnabled()) {
+  private boolean isTokenOwnerAndNotEnabled(String email, UserDto userDto) {
+    if (userDto.getEmail().equals(email) && userDto.isEnabled()) {
       LOG.debug(SignUpConstants.ACCOUNT_EXISTS);
       throw new UserAlreadyExistsException(SignUpConstants.ACCOUNT_EXISTS);
-    } else if (userDto.getPublicId().equals(publicId) && !userDto.isEnabled()) {
+    } else if (userDto.getEmail().equals(email) && !userDto.isEnabled()) {
       UserUtils.enableUser(userDto);
 
       return true;

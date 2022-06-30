@@ -1,13 +1,13 @@
 interface User {
   publicId: string;
-  username: string;
+  name: string;
   email: string;
   roles: string[];
 }
 
 export const initialUser: User = {
   publicId: "",
-  username: "",
+  name: "",
   email: "",
   roles: [],
 };

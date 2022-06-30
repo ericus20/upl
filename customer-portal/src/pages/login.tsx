@@ -8,18 +8,21 @@ import Alert from "components/core/Alert";
 import Link from "components/core/Link";
 import Spinner from "components/core/Spinner";
 import AlertId from "enums/AlertId";
-import LoginRequest from "models/LoginRequest";
+import LoginRequest from "models/request/LoginRequest";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
+import { NextPageWithLayout } from "types/layout";
 import * as Yup from "yup";
 
-const Login = () => {
+const Login: NextPageWithLayout = () => {
   const router = useRouter();
   const dispatch: AppDispatch = useAppDispatch();
 
   // form validation rules
   const validationSchema = Yup.object().shape({
-    username: Yup.string().required("Username is required"),
+    email: Yup.string()
+      .email("Email must be valid")
+      .required("Email is required"),
     password: Yup.string().required("Password is required"),
   });
   const formOptions = { resolver: yupResolver(validationSchema) };
@@ -37,31 +40,36 @@ const Login = () => {
     }
   };
 
+  const redOutline = "outline-red-500";
+  const greenOutline = "outline-green-500";
+
   return (
     <div className="flex m-auto mt-14 justify-center items-center">
       <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-md sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700 w-1/4">
         <Alert id={AlertId.LOGIN} />
-        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-          <h5 className="text-xl font-medium text-gray-900 dark:text-white">
+        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+          <h5 className="text-lg text-center font-medium text-gray-900 dark:text-white">
             Sign in
           </h5>
           <div>
             <label
-              htmlFor="username"
+              htmlFor="email"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
             >
-              Username or Email
+              Email
             </label>
             <input
-              id="username"
-              type="text"
-              {...register("username")}
+              id="email"
+              type="email"
+              {...register("email")}
               className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white form-control ${
-                errors.username ? "outline-red-500" : ""
+                errors.email ? redOutline : greenOutline
               }`}
-              placeholder="Username/Email"
+              placeholder="Email"
             />
-            <div className="text-red-500">{errors.username?.message}</div>
+            <div className="text-red-500 text-xs my-1">
+              {errors.email?.message}
+            </div>
           </div>
           <div>
             <label
@@ -76,10 +84,12 @@ const Login = () => {
               id="password"
               placeholder="*****"
               className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white ${
-                errors.password ? "outline-red-500" : ""
+                errors.password ? redOutline : greenOutline
               }`}
             />
-            <div className="text-red-500">{errors.password?.message}</div>
+            <div className="text-red-500 text-xs my-1">
+              {errors.password?.message}
+            </div>
           </div>
           <div className="flex items-start">
             <div className="flex items-start">
@@ -127,5 +137,7 @@ const Login = () => {
     </div>
   );
 };
+
+Login.getLayout = (page: React.ReactElement) => page;
 
 export default Login;

@@ -42,6 +42,7 @@ public final class UserDetailsBuilder implements UserDetails {
 
   private Collection<? extends GrantedAuthority> authorities;
 
+  @Override
   public String getUsername() {
     return email;
   }
@@ -69,6 +70,7 @@ public final class UserDetailsBuilder implements UserDetails {
     return UserDetailsBuilder.builder()
         .id(user.getId())
         .email(user.getEmail())
+        .name(user.getName())
         .publicId(user.getPublicId())
         .password(user.getPassword())
         .publicId(user.getPublicId())

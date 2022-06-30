@@ -1,13 +1,15 @@
 import { useAppSelector } from "app/hooks";
 import { selectAuth } from "app/slices/auth";
+import RoleType from "enums/RoleType";
 import axiosInstance from "libs/axios";
 import dynamic from "next/dynamic";
 import React from "react";
 
 // Dynamically import the AuthGuard component.
 const AuthGuard = dynamic<{
+  rolesAllowed?: string[];
   children: React.ReactNode;
-}>(() => import("components/layout/AuthGuard"));
+}>(() => import("layout/AuthGuard"));
 
 const Secured = () => {
   const { principal } = useAppSelector(selectAuth);
@@ -23,9 +25,9 @@ const Secured = () => {
   };
 
   return (
-    <AuthGuard>
+    <AuthGuard rolesAllowed={[RoleType.ADMIN]}>
       <section className=" text-center m-auto mt-20 justify-center items-center">
-        <h2>Welcome {principal.username}, You are in a secured spot!</h2>
+        <h2>Welcome {principal.name}, You are in a secured spot!</h2>
 
         <button type="button" onClick={enableUser}>
           Enable me
