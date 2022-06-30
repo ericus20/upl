@@ -9,9 +9,7 @@
  * @type {Record<string, string>}
  */
 const config = {
-  // We target the API stage environment for the systems we're dependent on,
-  // even in dev and test. Read more here: https://lwd.atlassian.net/wiki/spaces/DD/pages/246612440/Environments
-  apiUrl: "http://localhost:3000",
+  apiUrl: "http://localhost:8080",
 };
 
 module.exports = config;

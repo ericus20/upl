@@ -7,7 +7,7 @@ import routes from "routes";
 
 // Create axios instance.
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: process.env.apiUrl,
   withCredentials: true,
 });
 

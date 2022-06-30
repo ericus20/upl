@@ -2,7 +2,7 @@ const buildEnv = process.env.NODE_ENV || "development";
 const envVariables = require("./config")[buildEnv] || {};
 
 // eslint-disable-next-line no-console
-console.log(`📦 Using "${buildEnv}" environment variables to build the site.`);
+console.log(`📦 Building with "${buildEnv}" environment variables.`);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
