@@ -73,16 +73,16 @@ public class AuthRestApi {
       @CookieValue(required = false) String refreshToken,
       @Valid @RequestBody LoginRequest loginRequest) {
 
-    var username = loginRequest.getUsername();
+    var email = loginRequest.getEmail();
     // Authentication will fail if the credentials are invalid and throw exception.
-    SecurityUtils.authenticateUser(authenticationManager, username, loginRequest.getPassword());
+    SecurityUtils.authenticateUser(authenticationManager, email, loginRequest.getPassword());
 
     var decryptedRefreshToken = encryptionService.decrypt(refreshToken);
     var isRefreshTokenValid = jwtService.isValidJwtToken(decryptedRefreshToken);
 
     var responseHeaders = new HttpHeaders();
     // If the refresh token is valid, then we will not generate a new refresh token.
-    String newAccessToken = updateCookies(username, isRefreshTokenValid, responseHeaders);
+    String newAccessToken = updateCookies(email, isRefreshTokenValid, responseHeaders);
     String encryptedAccessToken = encryptionService.encrypt(newAccessToken);
 
     return ResponseEntity.ok()
@@ -109,14 +109,14 @@ public class AuthRestApi {
     if (!isRefreshTokenValid) {
       throw new IllegalArgumentException(ErrorConstants.INVALID_TOKEN);
     }
-    var username = jwtService.getUsernameFromToken(decryptedRefreshToken);
-    var userDetails = userDetailsService.loadUserByUsername(username);
+    var email = jwtService.getEmailFromToken(decryptedRefreshToken);
+    var userDetails = userDetailsService.loadUserByUsername(email);
 
     SecurityUtils.validateUserDetailsStatus(userDetails);
     SecurityUtils.authenticateUser(request, userDetails);
 
     var responseHeaders = new HttpHeaders();
-    String newAccessToken = updateCookies(username, false, responseHeaders);
+    String newAccessToken = updateCookies(email, false, responseHeaders);
     String encryptedAccessToken = encryptionService.encrypt(newAccessToken);
 
     return ResponseEntity.ok()
@@ -148,14 +148,14 @@ public class AuthRestApi {
   /**
    * Creates a refresh token if expired and adds it to the cookies.
    *
-   * @param username the username
+   * @param email the email
    * @param isRefreshValid if the refresh token is valid
    * @param headers the http headers
    */
-  private String updateCookies(String username, boolean isRefreshValid, HttpHeaders headers) {
+  private String updateCookies(String email, boolean isRefreshValid, HttpHeaders headers) {
 
     if (!isRefreshValid) {
-      var token = jwtService.generateJwtToken(username);
+      var token = jwtService.generateJwtToken(email);
       var refreshDuration = Duration.ofDays(SecurityConstants.DEFAULT_TOKEN_DURATION);
 
       var encryptedToken = encryptionService.encrypt(token);
@@ -163,6 +163,6 @@ public class AuthRestApi {
     }
 
     var accessTokenExpiration = DateUtils.addMinutes(new Date(), NUMBER_OF_MINUTES_TO_EXPIRE);
-    return jwtService.generateJwtToken(username, accessTokenExpiration);
+    return jwtService.generateJwtToken(email, accessTokenExpiration);
   }
 }

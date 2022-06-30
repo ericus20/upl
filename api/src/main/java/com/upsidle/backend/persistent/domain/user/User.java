@@ -15,11 +15,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -40,9 +38,8 @@ public class User extends BaseEntity<Long> implements Serializable {
   @Serial private static final long serialVersionUID = 7538542321562810251L;
 
   @Column(unique = true, nullable = false)
-  @NotBlank(message = UserConstants.BLANK_USERNAME)
-  @Size(min = 3, max = 50, message = UserConstants.USERNAME_SIZE)
-  private String username;
+  @NotBlank(message = UserConstants.BLANK_NAME)
+  private String name;
 
   @Column(unique = true, nullable = false)
   @NotBlank(message = UserConstants.BLANK_EMAIL)
@@ -54,9 +51,6 @@ public class User extends BaseEntity<Long> implements Serializable {
   @NotBlank(message = UserConstants.BLANK_PASSWORD)
   private String password;
 
-  private String firstName;
-  private String middleName;
-  private String lastName;
   private String phone;
   private String profileImage;
   private String verificationToken;
@@ -85,7 +79,6 @@ public class User extends BaseEntity<Long> implements Serializable {
       return false;
     }
     return Objects.equals(getPublicId(), user.getPublicId())
-        && Objects.equals(getUsername(), user.getUsername())
         && Objects.equals(getEmail(), user.getEmail());
   }
 
@@ -96,7 +89,7 @@ public class User extends BaseEntity<Long> implements Serializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getPublicId(), getUsername(), getEmail());
+    return Objects.hash(super.hashCode(), getPublicId(), getEmail());
   }
 
   /**
@@ -131,14 +124,5 @@ public class User extends BaseEntity<Long> implements Serializable {
   public void addUserHistory(UserHistory userHistory) {
     userHistories.add(userHistory);
     userHistory.setUser(this);
-  }
-
-  /**
-   * Formulates the full name of the user.
-   *
-   * @return the full name of the user
-   */
-  public String getName() {
-    return StringUtils.joinWith(StringUtils.SPACE, getFirstName(), getMiddleName(), getLastName());
   }
 }

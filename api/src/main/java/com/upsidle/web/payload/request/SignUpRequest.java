@@ -22,11 +22,7 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class SignUpRequest {
 
-  @EqualsAndHashCode.Include
-  @NotBlank(message = UserConstants.BLANK_USERNAME)
-  @Size(min = 3, max = 50, message = UserConstants.USERNAME_SIZE)
-  private String username;
-
+  @NotBlank(message = UserConstants.BLANK_NAME)
   private String name;
 
   @Size(max = 60)

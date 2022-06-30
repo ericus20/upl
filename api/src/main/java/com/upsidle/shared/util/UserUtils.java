@@ -22,7 +22,6 @@ import java.util.Set;
 import net.datafaker.Faker;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.validator.routines.EmailValidator;
 
 /**
  * User utility class that holds methods used across application.
@@ -52,7 +51,7 @@ public final class UserUtils {
    * @return a user
    */
   public static User createUser() {
-    return createUser(FAKER.name().username());
+    return createUser(FAKER.internet().emailAddress());
   }
 
   /**
@@ -63,21 +62,20 @@ public final class UserUtils {
    */
   public static User createUser(final boolean enabled) {
     return createUser(
-        FAKER.name().username(),
-        FAKER.internet().password(PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH),
         FAKER.internet().emailAddress(),
+        FAKER.internet().password(PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH),
         enabled);
   }
 
   /**
    * Create a user with some flexibility.
    *
-   * @param username username used to create user.
+   * @param email email used to create user.
    * @param roleType the role type
    * @return a user
    */
-  public static User createUser(String username, RoleType roleType) {
-    var user = createUser(username);
+  public static User createUser(String email, RoleType roleType) {
+    var user = createUser(email);
     user.getUserRoles().add(new UserRole(user, new Role(roleType)));
     return user;
   }
@@ -85,49 +83,38 @@ public final class UserUtils {
   /**
    * Create a user with some flexibility.
    *
-   * @param username username used to create user.
+   * @param email email used to create user.
    * @return a user
    */
-  public static User createUser(String username) {
-    return createUser(
-        username,
-        FAKER.internet().password(PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH),
-        FAKER.internet().emailAddress());
+  public static User createUser(String email) {
+    return createUser(email, FAKER.internet().password(PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH));
   }
 
   /**
    * Create a user with some flexibility.
    *
-   * @param username username used to create user
+   * @param email email used to create user
    * @param password password used to create user.
-   * @param email email used to create user.
    * @return a user
    */
-  public static User createUser(String username, String password, String email) {
-    return createUser(username, password, email, false);
+  public static User createUser(String email, String password) {
+    return createUser(email, password, false);
   }
 
   /**
    * Create user with some flexibility.
    *
-   * @param username username used to create user.
    * @param password password used to create user.
    * @param email email used to create user.
    * @param enabled boolean value used to evaluate if user enabled.
    * @return a user
    */
-  public static User createUser(String username, String password, String email, boolean enabled) {
+  public static User createUser(String email, String password, boolean enabled) {
     var user = new User();
-    user.setUsername(username);
-    user.setPassword(password);
     user.setEmail(email);
+    user.setPassword(password);
     user.setPhone(FAKER.phoneNumber().cellPhone());
-
-    var name = FAKER.name().nameWithMiddle();
-    var fullName = name.split(" ");
-    user.setFirstName(fullName[0]);
-    user.setMiddleName(fullName[1]);
-    user.setLastName(fullName[2]);
+    user.setName(FAKER.name().nameWithMiddle());
 
     if (enabled) {
       user.setEnabled(true);
@@ -141,11 +128,11 @@ public final class UserUtils {
   /**
    * Create a test user with flexibility.
    *
-   * @param username the username
+   * @param email the email
    * @return the userDto
    */
-  public static UserDto createUserDto(final String username) {
-    return UserUtils.convertToUserDto(createUser(username));
+  public static UserDto createUserDto(final String email) {
+    return UserUtils.convertToUserDto(createUser(email));
   }
 
   /**
@@ -155,18 +142,18 @@ public final class UserUtils {
    * @return the userDto
    */
   public static UserDto createUserDto(final boolean enabled) {
-    return createUserDto(FAKER.name().username(), enabled);
+    return createUserDto(FAKER.internet().emailAddress(), enabled);
   }
 
   /**
    * Create a test user with flexibility.
    *
-   * @param username the username
+   * @param email the email
    * @param enabled if the user should be enabled to authenticate
    * @return the userDto
    */
-  public static UserDto createUserDto(final String username, boolean enabled) {
-    var userDto = UserUtils.convertToUserDto(createUser(username));
+  public static UserDto createUserDto(final String email, boolean enabled) {
+    var userDto = UserUtils.convertToUserDto(createUser(email));
     if (enabled) {
       enableUser(userDto);
     }
@@ -176,15 +163,13 @@ public final class UserUtils {
   /**
    * Create user with some flexibility.
    *
-   * @param username username used to create user.
-   * @param password password used to create user.
    * @param email email used to create user.
+   * @param password password used to create user.
    * @param enabled boolean value used to evaluate if user enabled.
    * @return a userDto
    */
-  public static UserDto createUserDto(
-      String username, String password, String email, boolean enabled) {
-    var user = createUser(username, password, email, enabled);
+  public static UserDto createUserDto(String email, String password, boolean enabled) {
+    var user = createUser(email, password, enabled);
 
     return UserUtils.convertToUserDto(user);
   }
@@ -272,16 +257,6 @@ public final class UserUtils {
     userDto.setAccountNonExpired(true);
     userDto.setAccountNonLocked(true);
     userDto.setCredentialsNonExpired(true);
-  }
-
-  /**
-   * Verifies input string is an email.
-   *
-   * @param email email.
-   * @return true if pattern matches valid3 email, otherwise false.
-   */
-  public static boolean isEmail(String email) {
-    return EmailValidator.getInstance().isValid(email);
   }
 
   /**

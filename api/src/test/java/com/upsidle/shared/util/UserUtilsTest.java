@@ -22,7 +22,6 @@ class UserUtilsTest extends TestUtils {
     User user = UserUtils.createUser();
     Assertions.assertAll(
         () -> {
-          Assertions.assertNotNull(user.getUsername());
           Assertions.assertNotNull(user.getPassword());
           Assertions.assertNotNull(user.getEmail());
         });
@@ -33,27 +32,22 @@ class UserUtilsTest extends TestUtils {
     User user = UserUtils.createUser(testInfo.getDisplayName());
     Assertions.assertAll(
         () -> {
-          Assertions.assertNotNull(user.getUsername());
           Assertions.assertNotNull(user.getPassword());
           Assertions.assertNotNull(user.getEmail());
 
-          Assertions.assertEquals(testInfo.getDisplayName(), user.getUsername());
+          Assertions.assertEquals(testInfo.getDisplayName(), user.getEmail());
         });
   }
 
   @Test
-  void createUserWithFourParameters() {
+  void createUserWithFourParameters(TestInfo testInfo) {
 
     UserDto userDto =
         UserUtils.createUserDto(
-            FAKER.name().username(),
-            FAKER.elderScrolls().city(),
-            FAKER.pokemon().name(),
-            Boolean.TRUE);
+            FAKER.internet().emailAddress(), testInfo.getDisplayName(), Boolean.TRUE);
 
     Assertions.assertAll(
         () -> {
-          Assertions.assertNotNull(userDto.getUsername());
           Assertions.assertNotNull(userDto.getPassword());
           Assertions.assertNotNull(userDto.getEmail());
           Assertions.assertTrue(userDto.isEnabled());
@@ -67,9 +61,8 @@ class UserUtilsTest extends TestUtils {
 
     Assertions.assertAll(
         () -> {
-          Assertions.assertEquals(user.getUsername(), userDto.getUsername());
+          Assertions.assertEquals(user.getEmail(), userDto.getEmail());
           Assertions.assertNotNull(userDto.getPassword());
-          Assertions.assertNotNull(userDto.getEmail());
         });
   }
 

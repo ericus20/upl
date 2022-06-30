@@ -51,7 +51,7 @@ class AuditServiceIntegrationTest extends IntegrationTestUtils {
     var userDto = createAndAssertUser(UserUtils.createUserDto(false));
 
     userService.deleteUser(userDto.getPublicId());
-    Assertions.assertFalse(userService.existsByUsername(userDto.getUsername()));
+    Assertions.assertFalse(userService.existsByEmail(userDto.getEmail()));
 
     var auditLogs = auditService.getAuditLogs(User.class, true, true);
     Assertions.assertFalse(auditLogs.isEmpty());

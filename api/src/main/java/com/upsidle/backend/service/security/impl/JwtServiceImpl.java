@@ -45,30 +45,30 @@ public class JwtServiceImpl implements JwtService {
   /**
    * Generate a JwtToken for the specified username.
    *
-   * @param username the username
+   * @param email the username
    * @return the token
    */
   @Override
-  public String generateJwtToken(String username) {
-    Validate.notBlank(username, UserConstants.BLANK_USERNAME);
+  public String generateJwtToken(String email) {
+    Validate.notBlank(email, UserConstants.BLANK_PUBLIC_ID);
 
-    return generateJwtToken(username, DateUtils.addDays(new Date(), NUMBER_OF_DAYS_TO_EXPIRE));
+    return generateJwtToken(email, DateUtils.addDays(new Date(), NUMBER_OF_DAYS_TO_EXPIRE));
   }
 
   /**
    * Generate a JwtToken for the specified username.
    *
-   * @param username the username
+   * @param email the username
    * @param expiration the expiration date
    * @return the token
    */
   @Override
-  public String generateJwtToken(String username, Date expiration) {
-    Validate.notBlank(username, UserConstants.BLANK_USERNAME);
+  public String generateJwtToken(String email, Date expiration) {
+    Validate.notBlank(email, UserConstants.BLANK_PUBLIC_ID);
 
     var jwtToken =
         Jwts.builder()
-            .setSubject(username)
+            .setSubject(email)
             .setIssuedAt(new Date())
             .setExpiration(expiration)
             .signWith(SignatureAlgorithm.HS512, jwtSecret)
@@ -85,7 +85,7 @@ public class JwtServiceImpl implements JwtService {
    * @return the username
    */
   @Override
-  public String getUsernameFromToken(String token) {
+  public String getEmailFromToken(String token) {
     Validate.notBlank(token, "Token cannot be blank");
 
     return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();

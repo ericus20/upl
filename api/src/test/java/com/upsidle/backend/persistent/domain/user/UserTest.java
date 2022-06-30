@@ -6,7 +6,6 @@ import com.upsidle.TestUtils;
 import com.upsidle.enums.RoleType;
 import com.upsidle.shared.util.UserUtils;
 import nl.jqno.equalsverifier.EqualsVerifier;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -48,15 +47,5 @@ class UserTest {
 
     user.removeUserRole(user, new Role(RoleType.ROLE_USER));
     Assertions.assertTrue(user.getUserRoles().isEmpty());
-  }
-
-  @Test
-  void testName() {
-    var user = UserUtils.createUser();
-    var name =
-        String.join(
-            StringUtils.SPACE, user.getFirstName(), user.getMiddleName(), user.getLastName());
-
-    Assertions.assertEquals(name, user.getName());
   }
 }

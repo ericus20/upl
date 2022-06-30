@@ -179,7 +179,7 @@ class EmailServiceIntegrationTest extends IntegrationTestUtils {
   void sendAccountVerificationEmail() {
 
     var userDto = UserUtils.createUserDto(false);
-    var token = jwtService.generateJwtToken(userDto.getUsername());
+    var token = jwtService.generateJwtToken(userDto.getEmail());
     subject = EmailConstants.CONFIRMATION_PENDING_EMAIL_SUBJECT;
     recipient = userDto.getEmail();
 
@@ -204,7 +204,7 @@ class EmailServiceIntegrationTest extends IntegrationTestUtils {
   void sendPasswordResetEmail() {
 
     var userDto = UserUtils.createUserDto(false);
-    var token = jwtService.generateJwtToken(userDto.getUsername());
+    var token = jwtService.generateJwtToken(userDto.getEmail());
     subject = EmailConstants.PASSWORD_RESET_EMAIL_SUBJECT;
     recipient = userDto.getEmail();
 

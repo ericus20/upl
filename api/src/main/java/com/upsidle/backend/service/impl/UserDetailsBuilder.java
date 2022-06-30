@@ -31,10 +31,8 @@ public final class UserDetailsBuilder implements UserDetails {
   private Long id;
   @EqualsAndHashCode.Include private String email;
   @EqualsAndHashCode.Include private String publicId;
-  @EqualsAndHashCode.Include private String username;
-  private String firstName;
-  private String middleName;
-  private String lastName;
+
+  private String name;
   private String password;
   private String phone;
   private boolean enabled;
@@ -43,6 +41,10 @@ public final class UserDetailsBuilder implements UserDetails {
   private boolean credentialsNonExpired;
 
   private Collection<? extends GrantedAuthority> authorities;
+
+  public String getUsername() {
+    return email;
+  }
 
   /**
    * Builds userDetails object from the specified user.
@@ -68,11 +70,7 @@ public final class UserDetailsBuilder implements UserDetails {
         .id(user.getId())
         .email(user.getEmail())
         .publicId(user.getPublicId())
-        .username(user.getUsername())
         .password(user.getPassword())
-        .firstName(user.getFirstName())
-        .middleName(user.getMiddleName())
-        .lastName(user.getLastName())
         .publicId(user.getPublicId())
         .enabled(user.isEnabled())
         .accountNonExpired(user.isAccountNonExpired())

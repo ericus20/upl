@@ -13,7 +13,7 @@ class SignUpRequestTest {
     EqualsVerifier.forClass(SignUpRequest.class)
         // No need to make the fields final as they might be updated
         .suppress(Warning.NONFINAL_FIELDS)
-        .withOnlyTheseFields("username", "email")
+        .withOnlyTheseFields("email")
         .verify();
   }
 

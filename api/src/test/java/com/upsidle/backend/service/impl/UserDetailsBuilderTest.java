@@ -55,7 +55,7 @@ class UserDetailsBuilderTest {
         .withRedefinedSuperclass()
         .withPrefabValues(User.class, client, admin)
         .suppress(Warning.NONFINAL_FIELDS)
-        .withOnlyTheseFields("publicId", "username", "email")
+        .withOnlyTheseFields("publicId", "email")
         .verify();
   }
 

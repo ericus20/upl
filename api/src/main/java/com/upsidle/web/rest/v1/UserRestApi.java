@@ -20,6 +20,7 @@ import com.upsidle.shared.util.core.SecurityUtils;
 import com.upsidle.web.payload.request.SignUpRequest;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import java.util.Objects;
+import java.util.UUID;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -105,12 +106,13 @@ public class UserRestApi {
   @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<OperationStatus> register(@RequestBody @Valid SignUpRequest user) {
     var userDto = UserUtils.convertToUserDto(user);
+    userDto.setPublicId(UUID.randomUUID().toString());
 
-    if (userService.existsByUsernameOrEmailAndEnabled(user.getUsername(), user.getEmail())) {
-      LOG.warn(UserConstants.USERNAME_OR_EMAIL_EXITS);
-      throw new UserAlreadyExistsException(UserConstants.USERNAME_OR_EMAIL_EXITS);
+    if (userService.existsByEmailAndEnabled(user.getEmail())) {
+      LOG.warn(UserConstants.EMAIL_EXITS);
+      throw new UserAlreadyExistsException(UserConstants.EMAIL_EXITS);
     }
-    var verificationToken = jwtService.generateJwtToken(user.getUsername());
+    var verificationToken = jwtService.generateJwtToken(userDto.getPublicId());
     userDto.setVerificationToken(verificationToken);
 
     var savedUserDto = userService.createUser(userDto, user.getRoles());
@@ -150,7 +152,7 @@ public class UserRestApi {
     emailService.sendAccountConfirmationEmail(userDto, customerPortalUrl);
 
     // automatically authenticate the userDto since there will be a redirection to profile page
-    UserDetails userDetails = userService.getUserDetails(userDto.getUsername());
+    UserDetails userDetails = userService.getUserDetails(userDto.getEmail());
     SecurityUtils.authenticateUser(userDetails);
 
     var location =
@@ -170,12 +172,12 @@ public class UserRestApi {
    */
   private UserDto validateTokenAndUpdateUser(final String token) {
     if (jwtService.isValidJwtToken(token)) {
-      var username = jwtService.getUsernameFromToken(token);
-      var userDto = userService.findByUsername(username);
+      var publicId = jwtService.getEmailFromToken(token);
+      var userDto = userService.findByPublicId(publicId);
 
       if (Objects.nonNull(userDto)
           && token.equals(userDto.getVerificationToken())
-          && isTokenOwnerAndNotEnabled(username, userDto)) {
+          && isTokenOwnerAndNotEnabled(publicId, userDto)) {
         return userService.updateUser(userDto, UserHistoryType.VERIFIED);
       }
     }
@@ -187,15 +189,15 @@ public class UserRestApi {
   /**
    * Checks if the token owner is the same as the userDto and if the user is not enabled.
    *
-   * @param username the username
+   * @param publicId the publicId
    * @param userDto the user dto
    * @return if the token owner is the same as the userDto and if the user is not enabled
    */
-  private boolean isTokenOwnerAndNotEnabled(String username, UserDto userDto) {
-    if (userDto.getUsername().equals(username) && userDto.isEnabled()) {
+  private boolean isTokenOwnerAndNotEnabled(String publicId, UserDto userDto) {
+    if (userDto.getPublicId().equals(publicId) && userDto.isEnabled()) {
       LOG.debug(SignUpConstants.ACCOUNT_EXISTS);
       throw new UserAlreadyExistsException(SignUpConstants.ACCOUNT_EXISTS);
-    } else if (userDto.getUsername().equals(username) && !userDto.isEnabled()) {
+    } else if (userDto.getPublicId().equals(publicId) && !userDto.isEnabled()) {
       UserUtils.enableUser(userDto);
 
       return true;

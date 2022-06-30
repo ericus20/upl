@@ -44,7 +44,7 @@ class AuthRestApiIntegrationTest extends IntegrationTestUtils {
     var userDto = UserUtils.createUserDto(true);
     storedUser = createAndAssertAdmin(userDto);
 
-    var loginRequest = new LoginRequest(storedUser.getUsername(), userDto.getPassword());
+    var loginRequest = new LoginRequest(storedUser.getEmail(), userDto.getPassword());
     loginRequestJson = TestUtils.toJson(loginRequest);
 
     String delimiter = "/";
@@ -96,7 +96,7 @@ class AuthRestApiIntegrationTest extends IntegrationTestUtils {
   @Test
   void loginPathWithInvalidCredentialsReturnsUnauthorized(TestInfo testInfo) throws Exception {
 
-    var loginRequest = new LoginRequest(storedUser.getUsername(), testInfo.getDisplayName());
+    var loginRequest = new LoginRequest(storedUser.getEmail(), testInfo.getDisplayName());
     var invalidLoginRequestJson = TestUtils.toJson(loginRequest);
 
     performRequest(MockMvcRequestBuilders.post(loginUri), invalidLoginRequestJson)
@@ -111,7 +111,7 @@ class AuthRestApiIntegrationTest extends IntegrationTestUtils {
   @Test
   void validRefreshTokenReturnsNewAccessToken() throws Exception {
 
-    var jwtToken = jwtService.generateJwtToken(storedUser.getUsername());
+    var jwtToken = jwtService.generateJwtToken(storedUser.getEmail());
     var encryptedJwtToken = encryptionService.encrypt(jwtToken);
     var cookie = cookieService.createTokenCookie(encryptedJwtToken, TokenType.REFRESH);
 
@@ -213,7 +213,7 @@ class AuthRestApiIntegrationTest extends IntegrationTestUtils {
       MockMvcResultMatchers.cookie().httpOnly(TokenType.REFRESH.getName(), true),
       MockMvcResultMatchers.cookie().maxAge(TokenType.REFRESH.getName(), Math.toIntExact(value)),
       MockMvcResultMatchers.jsonPath("$").isMap(),
-      MockMvcResultMatchers.jsonPath("$.username").value(userDto.getUsername()),
+      MockMvcResultMatchers.jsonPath("$.email").value(userDto.getEmail()),
       MockMvcResultMatchers.jsonPath("$.publicId").value(userDto.getPublicId()),
       MockMvcResultMatchers.jsonPath("$.email").value(userDto.getEmail()),
       MockMvcResultMatchers.jsonPath("$.roles").value(UserUtils.getRoles(userDto.getUserRoles())),

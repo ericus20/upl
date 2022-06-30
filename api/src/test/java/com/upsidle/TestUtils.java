@@ -30,7 +30,7 @@ public class TestUtils {
     "id", "createdAt", "createdBy", "updatedAt", "updatedBy"
   };
   private static final String[] BASE_EQUALS_AND_HASH_CODE_FIELDS = {"version", "publicId"};
-  private static final String[] USER_EQUALS_FIELDS = {"publicId", "username", "email"};
+  private static final String[] USER_EQUALS_FIELDS = {"publicId", "email"};
 
   public static final String ANONYMOUS_USER = "anonymousUser";
   public static final String ANONYMOUS_ROLE = "ROLE_ANONYMOUS";

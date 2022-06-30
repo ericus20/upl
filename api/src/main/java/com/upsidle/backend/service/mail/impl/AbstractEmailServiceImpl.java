@@ -4,7 +4,6 @@ import com.upsidle.backend.service.mail.EmailService;
 import com.upsidle.constant.EmailConstants;
 import com.upsidle.constant.SecurityConstants;
 import com.upsidle.constant.user.PasswordConstants;
-import com.upsidle.constant.user.ProfileConstants;
 import com.upsidle.constant.user.SignUpConstants;
 import com.upsidle.constant.user.UserConstants;
 import com.upsidle.exception.InvalidServiceRequestException;
@@ -46,7 +45,7 @@ public abstract class AbstractEmailServiceImpl implements EmailService {
   public static HtmlEmailRequest prepareEmailRequest(final HtmlEmailRequest emailRequest) {
     var context = new Context();
     context.setVariable(EmailConstants.URLS, emailRequest.getUrls());
-    context.setVariable(UserConstants.USERNAME, emailRequest.getReceiver().getUsername());
+    context.setVariable(UserConstants.NAME, emailRequest.getReceiver().getName());
     emailRequest.setTo(emailRequest.getReceiver().getEmail());
     emailRequest.setSubject(emailRequest.getSubject());
 
@@ -94,7 +93,7 @@ public abstract class AbstractEmailServiceImpl implements EmailService {
         prepareHtmlEmailRequest(
             userDto,
             null,
-            ProfileConstants.PROFILE_MAPPING,
+            null,
             EmailConstants.EMAIL_WELCOME_TEMPLATE,
             EmailConstants.CONFIRMATION_SUCCESS_EMAIL_SUBJECT,
             baseUrl);
@@ -163,7 +162,7 @@ public abstract class AbstractEmailServiceImpl implements EmailService {
     } else if (StringUtils.isNotBlank(path)) {
       links.put(EmailConstants.EMAIL_LINK, WebUtils.getGenericUri(path));
     }
-    links.put(UserConstants.USERNAME, userDto.getUsername());
+    links.put(UserConstants.NAME, userDto.getName());
 
     var emailRequest = new HtmlEmailRequest();
     emailRequest.setTemplate(template);

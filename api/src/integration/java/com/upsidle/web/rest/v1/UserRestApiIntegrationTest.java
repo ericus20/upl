@@ -14,7 +14,6 @@ import javax.servlet.http.Cookie;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.http.HttpHeaders;
@@ -38,7 +37,7 @@ class UserRestApiIntegrationTest extends IntegrationTestUtils {
     var adminDto = UserUtils.createUserDto(true);
     createAndAssertAdmin(adminDto);
 
-    var loginRequest = new LoginRequest(adminDto.getUsername(), adminDto.getPassword());
+    var loginRequest = new LoginRequest(adminDto.getEmail(), adminDto.getPassword());
     loginRequestJson = TestUtils.toJson(loginRequest);
 
     var delimiter = "/";
@@ -70,8 +69,7 @@ class UserRestApiIntegrationTest extends IntegrationTestUtils {
         .andReturn();
 
     // Assert that user is enabled
-    Assertions.assertTrue(
-        userService.existsByUsernameOrEmailAndEnabled(userDto.getUsername(), userDto.getEmail()));
+    Assertions.assertTrue(userService.existsByEmailAndEnabled(userDto.getEmail()));
   }
 
   @Test
@@ -118,8 +116,7 @@ class UserRestApiIntegrationTest extends IntegrationTestUtils {
         .andReturn();
 
     // Assert that user is enabled
-    Assertions.assertFalse(
-        userService.existsByUsernameOrEmailAndEnabled(userDto.getUsername(), userDto.getEmail()));
+    Assertions.assertFalse(userService.existsByEmailAndEnabled(userDto.getEmail()));
   }
 
   @Test
@@ -171,10 +168,11 @@ class UserRestApiIntegrationTest extends IntegrationTestUtils {
 
   /** Delete a user */
   @Test
-  void deleteUser(TestInfo testInfo) throws Exception {
+  void deleteUser() throws Exception {
     // Endpoint: DELETE /api/v1/users/{publicId}
-    var userDto = createAndAssertUser(testInfo.getDisplayName(), true);
-    Assertions.assertTrue(userService.existsByUsername(userDto.getUsername()));
+    var email = FAKER.internet().emailAddress();
+    var userDto = createAndAssertUser(email, true);
+    Assertions.assertTrue(userService.existsByEmail(userDto.getEmail()));
 
     // Authenticate to retrieve access token
     var jwtResponse = getJwtResponse();
@@ -195,7 +193,7 @@ class UserRestApiIntegrationTest extends IntegrationTestUtils {
     Assertions.assertTrue(
         result.getResponse().getContentAsString().contains(OperationStatus.SUCCESS.name()));
 
-    Assertions.assertFalse(userService.existsByUsername(userDto.getUsername()));
+    Assertions.assertFalse(userService.existsByEmail(userDto.getEmail()));
   }
 
   /** Deleting a user without authorization should fail. Should return 401 Unauthorized. */

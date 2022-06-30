@@ -6,7 +6,6 @@ import com.upsidle.shared.util.UserUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -22,15 +21,14 @@ class UserDetailsServiceImplTest extends TestUtils {
   private transient String email;
 
   @BeforeEach
-  void setUp(TestInfo testInfo) throws Exception {
+  void setUp() throws Exception {
     try (var mocks = MockitoAnnotations.openMocks(this)) {
       Assertions.assertNotNull(mocks);
 
       email = FAKER.internet().emailAddress();
-      var user =
-          UserUtils.createUser(testInfo.getDisplayName(), FAKER.internet().password(), email);
+      var user = UserUtils.createUser(email, FAKER.internet().password());
 
-      Mockito.when(userRepository.findByUsername(testInfo.getDisplayName())).thenReturn(user);
+      Mockito.when(userRepository.findByEmail(email)).thenReturn(user);
       Mockito.when(userRepository.findByEmail(user.getEmail())).thenReturn(user);
     }
   }
@@ -41,10 +39,10 @@ class UserDetailsServiceImplTest extends TestUtils {
   }
 
   @Test
-  void testShouldReturnUserGivenAnExistingUsername(TestInfo testInfo) {
-    var userDetails = userDetailsService.loadUserByUsername(testInfo.getDisplayName());
+  void testShouldReturnUserGivenAnExistingUsername() {
+    var userDetails = userDetailsService.loadUserByUsername(email);
     Assertions.assertNotNull(userDetails);
-    Assertions.assertEquals(testInfo.getDisplayName(), userDetails.getUsername());
+    Assertions.assertEquals(email, userDetails.getUsername());
   }
 
   @Test
@@ -55,9 +53,9 @@ class UserDetailsServiceImplTest extends TestUtils {
   }
 
   @Test
-  void testShouldReturnUserGivenAnExistingEmail(TestInfo testInfo) {
+  void testShouldReturnUserGivenAnExistingEmail() {
     var userDetails = userDetailsService.loadUserByUsername(email);
     Assertions.assertNotNull(userDetails);
-    Assertions.assertEquals(testInfo.getDisplayName(), userDetails.getUsername());
+    Assertions.assertEquals(email, userDetails.getUsername());
   }
 }

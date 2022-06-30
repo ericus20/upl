@@ -40,6 +40,6 @@ class UserPruningSchedulerIntegrationTest extends IntegrationTestUtils {
     userPruningScheduler.pruneUsers();
 
     // Assert that the user is no longer in the database
-    Assertions.assertFalse(userService.existsByUsername(userDto.getUsername()));
+    Assertions.assertFalse(userService.existsByEmail(userDto.getEmail()));
   }
 }

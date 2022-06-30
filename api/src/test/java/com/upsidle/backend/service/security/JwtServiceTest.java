@@ -36,13 +36,12 @@ class JwtServiceTest {
   void generateJwtTokenThenVerifyUsername(TestInfo testInfo) {
     String jwtToken = jwtService.generateJwtToken(testInfo.getDisplayName());
 
-    Assertions.assertEquals(testInfo.getDisplayName(), jwtService.getUsernameFromToken(jwtToken));
+    Assertions.assertEquals(testInfo.getDisplayName(), jwtService.getEmailFromToken(jwtToken));
   }
 
   @Test
   void getUsernameFromTokenWithNullThrowsException() {
-    Assertions.assertThrows(
-        NullPointerException.class, () -> jwtService.getUsernameFromToken(null));
+    Assertions.assertThrows(NullPointerException.class, () -> jwtService.getEmailFromToken(null));
   }
 
   @Test

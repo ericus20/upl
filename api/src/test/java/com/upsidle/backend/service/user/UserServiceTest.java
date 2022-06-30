@@ -70,14 +70,6 @@ class UserServiceTest {
     Assertions.assertThrows(NullPointerException.class, () -> userService.createUser(null, null));
   }
 
-  @Test
-  void getUserByUsername() {
-    Mockito.when(userRepository.findByUsername(userDto.getUsername())).thenReturn(user);
-
-    UserDto storedUserDetails = userService.findByUsername(this.userDto.getUsername());
-    Assertions.assertEquals(userDto, storedUserDetails);
-  }
-
   // Test find all users that failed to verify their email after a certain time.
   @Test
   void findAllNotEnabledAfterAllowedDays() {
@@ -92,11 +84,6 @@ class UserServiceTest {
 
     List<UserDto> users = userService.findAllNotEnabledAfterAllowedDays();
     Assertions.assertTrue(users.contains(UserUtils.convertToUserDto(user)));
-  }
-
-  @Test
-  void getUserByUsernameWithNullShouldThrowNullPointerException() {
-    Assertions.assertThrows(NullPointerException.class, () -> userService.findByUsername(null));
   }
 
   @Test

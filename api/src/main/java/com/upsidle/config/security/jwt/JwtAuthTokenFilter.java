@@ -52,8 +52,8 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
       if (StringUtils.isNotBlank(accessToken) && jwtService.isValidJwtToken(accessToken)) {
 
-        var username = jwtService.getUsernameFromToken(accessToken);
-        var userDetails = userDetailsService.loadUserByUsername(username);
+        var email = jwtService.getEmailFromToken(accessToken);
+        var userDetails = userDetailsService.loadUserByUsername(email);
         SecurityUtils.authenticateUser(request, userDetails);
       }
     }

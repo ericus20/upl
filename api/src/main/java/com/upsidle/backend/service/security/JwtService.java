@@ -13,29 +13,29 @@ import javax.servlet.http.HttpServletRequest;
 public interface JwtService {
 
   /**
-   * Generate a JwtToken for the specified username.
+   * Generate a JwtToken for the specified email.
    *
-   * @param username the username
+   * @param email the email
    * @return the token
    */
-  String generateJwtToken(String username);
+  String generateJwtToken(String email);
 
   /**
-   * Generate a JwtToken for the specified username.
+   * Generate a JwtToken for the specified email.
    *
-   * @param username the username
+   * @param email the email
    * @param expiration the expiration date
    * @return the token
    */
-  String generateJwtToken(String username, Date expiration);
+  String generateJwtToken(String email, Date expiration);
 
   /**
-   * Retrieve username from the token.
+   * Retrieve email from the token.
    *
    * @param token the token
-   * @return the username
+   * @return the email
    */
-  String getUsernameFromToken(String token);
+  String getEmailFromToken(String token);
 
   /**
    * Retrieves the jwt token from the request cookie or request header if present and valid.

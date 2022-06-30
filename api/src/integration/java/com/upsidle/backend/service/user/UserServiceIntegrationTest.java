@@ -22,8 +22,9 @@ class UserServiceIntegrationTest extends IntegrationTestUtils {
    * assigned id.
    */
   @Test
-  void createUserWithoutSpecifiedRoles(TestInfo testInfo) {
-    var userDto = UserUtils.createUserDto(testInfo.getDisplayName());
+  void createUserWithoutSpecifiedRoles() {
+    var email = FAKER.internet().emailAddress();
+    var userDto = UserUtils.createUserDto(email);
     var persistedUserDto = userService.createUser(userDto);
 
     Assertions.assertAll(
@@ -44,9 +45,9 @@ class UserServiceIntegrationTest extends IntegrationTestUtils {
 
   /** Creating a user who exists and not enabled should return the existing user. */
   @Test
-  void createUserAlreadyExistingAndNotEnabled(TestInfo testInfo) {
-    // Create a new user with the test name as username
-    var userDto = createAndAssertUser(testInfo.getDisplayName(), false);
+  void createUserAlreadyExistingAndNotEnabled() {
+    var email = FAKER.internet().emailAddress();
+    var userDto = createAndAssertUser(email, false);
 
     // create another user using the same details from the first user "userDto"
     var existingUser = createAndAssertUser(userDto);
@@ -57,9 +58,9 @@ class UserServiceIntegrationTest extends IntegrationTestUtils {
 
   /** Creating a user who exists and enabled should return null. */
   @Test
-  void createUserAlreadyExistingAndEnabled(TestInfo testInfo) {
-    // Create a new user with the test name as username with enabled set to true
-    var userDto = createAndAssertUser(testInfo.getDisplayName(), true);
+  void createUserAlreadyExistingAndEnabled() {
+    var email = FAKER.internet().emailAddress();
+    var userDto = createAndAssertUser(email, true);
 
     // since the user is enabled, create another user using the same details from the first user
     // should return null as the user already exists.
@@ -68,24 +69,10 @@ class UserServiceIntegrationTest extends IntegrationTestUtils {
     Assertions.assertNull(existingUser);
   }
 
-  /** Test checks that an existing user can be retrieved using the username provided. */
   @Test
-  void getUserByUsername(TestInfo testInfo) {
-    var userDto = createAndAssertUser(testInfo.getDisplayName(), false);
-
-    var storedUser = userService.findByUsername(userDto.getUsername());
-    Assertions.assertEquals(userDto, storedUser);
-  }
-
-  @Test
-  void getUserByUsernameNotExisting(TestInfo testInfo) {
-    var userByUsername = userService.findByUsername(testInfo.getDisplayName());
-    Assertions.assertNull(userByUsername);
-  }
-
-  @Test
-  void getUserById(TestInfo testInfo) {
-    var userDto = createAndAssertUser(testInfo.getDisplayName(), false);
+  void getUserById() {
+    var email = FAKER.internet().emailAddress();
+    var userDto = createAndAssertUser(email, false);
 
     var storedUser = userService.findById(userDto.getId());
     Assertions.assertEquals(userDto, storedUser);
@@ -99,8 +86,9 @@ class UserServiceIntegrationTest extends IntegrationTestUtils {
   }
 
   @Test
-  void getUserByPublicId(TestInfo testInfo) {
-    var userDto = createAndAssertUser(testInfo.getDisplayName(), false);
+  void getUserByPublicId() {
+    var email = FAKER.internet().emailAddress();
+    var userDto = createAndAssertUser(email, false);
 
     var storedUser = userService.findByPublicId(userDto.getPublicId());
     Assertions.assertEquals(userDto, storedUser);
@@ -114,8 +102,9 @@ class UserServiceIntegrationTest extends IntegrationTestUtils {
   }
 
   @Test
-  void getUserByEmail(TestInfo testInfo) {
-    var userDto = createAndAssertUser(testInfo.getDisplayName(), false);
+  void getUserByEmail() {
+    var email = FAKER.internet().emailAddress();
+    var userDto = createAndAssertUser(email, false);
 
     var userByEmail = userService.findByEmail(userDto.getEmail());
     Assertions.assertEquals(userDto, userByEmail);
@@ -128,8 +117,9 @@ class UserServiceIntegrationTest extends IntegrationTestUtils {
   }
 
   @Test
-  void getUserHistories(TestInfo testInfo) {
-    var userDto = createAndAssertUser(testInfo.getDisplayName(), false);
+  void getUserHistories() {
+    var email = FAKER.internet().emailAddress();
+    var userDto = createAndAssertUser(email, false);
 
     var userHistoryDtos = UserUtils.convertToUserHistoryDto(userDto.getUserHistories());
 
@@ -139,8 +129,9 @@ class UserServiceIntegrationTest extends IntegrationTestUtils {
   }
 
   @Test
-  void findAllNotEnabledAfterCreationDays(TestInfo testInfo) {
-    var userDto = createAndAssertUser(testInfo.getDisplayName(), false);
+  void findAllNotEnabledAfterCreationDays() {
+    var email = FAKER.internet().emailAddress();
+    var userDto = createAndAssertUser(email, false);
 
     List<UserDto> users = userService.findAllNotEnabledAfterAllowedDays();
     // User was just created and should not be returned to be deleted.
@@ -148,57 +139,24 @@ class UserServiceIntegrationTest extends IntegrationTestUtils {
   }
 
   @Test
-  void getUserDetails(TestInfo testInfo) {
-    var userDto = createAndAssertUser(testInfo.getDisplayName(), false);
+  void getUserDetails() {
+    var email = FAKER.internet().emailAddress();
+    var userDto = createAndAssertUser(email, false);
 
-    var userDetails = userService.getUserDetails(userDto.getUsername());
+    var userDetails = userService.getUserDetails(userDto.getEmail());
     Assertions.assertTrue(userDetails instanceof UserDetailsBuilder);
   }
 
   @Test
-  void existsByUsername(TestInfo testInfo) {
-    var userDto = createAndAssertUser(testInfo.getDisplayName(), false);
-
-    var existsByUsername = userService.existsByUsername(userDto.getUsername());
-    Assertions.assertTrue(existsByUsername);
-  }
-
-  @Test
-  void existsByUsernameWithNullThrowsException() {
-    Assertions.assertThrows(NullPointerException.class, () -> userService.existsByUsername(null));
-  }
-
-  @Test
-  void existsByUsernameNotExisting(TestInfo testInfo) {
-    var existsByUsername = userService.existsByUsername(testInfo.getDisplayName());
-    Assertions.assertFalse(existsByUsername);
-  }
-
-  @Test
-  void existsByUsernameOrEmailNotEnabled(TestInfo testInfo) {
-    var user = createAndAssertUser(testInfo.getDisplayName(), false);
-
-    Assertions.assertFalse(
-        userService.existsByUsernameOrEmailAndEnabled(user.getUsername(), user.getEmail()));
-  }
-
-  @Test
-  void existsByUsernameOrEmailAndEnabled(TestInfo testInfo) {
-    var userDto = createAndAssertUser(testInfo.getDisplayName(), true);
-
-    Assertions.assertTrue(
-        userService.existsByUsernameOrEmailAndEnabled(userDto.getUsername(), userDto.getEmail()));
-  }
-
-  @Test
-  void updateUser(TestInfo testInfo) {
-    var userDto = createAndAssertUser(testInfo.getDisplayName(), false);
-    var previousFirstName = userDto.getFirstName();
-    userDto.setFirstName(FAKER.name().firstName());
+  void updateUser() {
+    var email = FAKER.internet().emailAddress();
+    var userDto = createAndAssertUser(email, false);
+    var previousName = userDto.getName();
+    userDto.setName(FAKER.name().fullName());
 
     var updatedUserDto = userService.updateUser(userDto, UserHistoryType.PROFILE_UPDATE);
     Assertions.assertNotNull(updatedUserDto.getId());
-    Assertions.assertNotEquals(previousFirstName, updatedUserDto.getFirstName());
+    Assertions.assertNotEquals(previousName, updatedUserDto.getName());
     Assertions.assertEquals(updatedUserDto.getId(), userDto.getId());
     Assertions.assertFalse(updatedUserDto.getUserRoles().isEmpty());
     Assertions.assertEquals(updatedUserDto.getUserRoles().size(), userDto.getUserRoles().size());
@@ -208,8 +166,9 @@ class UserServiceIntegrationTest extends IntegrationTestUtils {
   }
 
   @Test
-  void enableUser(TestInfo testInfo) {
-    var userDto = createAndAssertUser(testInfo.getDisplayName(), false);
+  void enableUser() {
+    var email = FAKER.internet().emailAddress();
+    var userDto = createAndAssertUser(email, false);
 
     // User should not be enabled after creation.
     Assertions.assertFalse(userDto.isEnabled());
@@ -230,8 +189,9 @@ class UserServiceIntegrationTest extends IntegrationTestUtils {
   }
 
   @Test
-  void disableUser(TestInfo testInfo) {
-    var userDto = createAndAssertUser(testInfo.getDisplayName(), true);
+  void disableUser() {
+    var email = FAKER.internet().emailAddress();
+    var userDto = createAndAssertUser(email, true);
 
     // User should be enabled after creation.
     Assertions.assertTrue(userDto.isEnabled());
@@ -247,28 +207,28 @@ class UserServiceIntegrationTest extends IntegrationTestUtils {
   }
 
   @Test
-  void isValidUsernameAndTokenWithValidToken() {
+  void isValidPublicIdAndTokenWithValidToken() {
     var userDto = createAndAssertUser(UserUtils.createUserDto(false));
-    var token = jwtService.generateJwtToken(userDto.getUsername());
-    Assertions.assertFalse(userService.isValidUsernameAndToken(userDto.getUsername(), token));
+    var token = jwtService.generateJwtToken(userDto.getEmail());
+    Assertions.assertFalse(userService.isValidEmailAndToken(userDto.getEmail(), token));
 
     userDto.setVerificationToken(token);
     userService.saveOrUpdate(UserUtils.convertToUser(userDto), true);
 
-    Assertions.assertTrue(userService.isValidUsernameAndToken(userDto.getUsername(), token));
+    Assertions.assertTrue(userService.isValidEmailAndToken(userDto.getEmail(), token));
   }
 
   @Test
-  void isValidUsernameAndTokenWithInvalidToken(TestInfo testInfo) {
+  void isValidPublicIdAndTokenWithInvalidToken(TestInfo testInfo) {
     Assertions.assertFalse(
-        userService.isValidUsernameAndToken(testInfo.getDisplayName(), testInfo.getDisplayName()));
+        userService.isValidEmailAndToken(testInfo.getDisplayName(), testInfo.getDisplayName()));
   }
 
   @Test
-  void isValidUsernameAndTokenWithNullTokenThrowsException(TestInfo testInfo) {
+  void isValidPublicIdAndTokenWithNullTokenThrowsException(TestInfo testInfo) {
     Assertions.assertThrows(
         NullPointerException.class,
-        () -> userService.isValidUsernameAndToken(null, testInfo.getDisplayName()));
+        () -> userService.isValidEmailAndToken(null, testInfo.getDisplayName()));
   }
 
   @Test
@@ -279,9 +239,9 @@ class UserServiceIntegrationTest extends IntegrationTestUtils {
   @Test
   void deleteUser() {
     var userDto = createAndAssertUser(UserUtils.createUserDto(false));
-    Assertions.assertTrue(userService.existsByUsername(userDto.getUsername()));
+    Assertions.assertTrue(userService.existsByEmail(userDto.getEmail()));
 
     userService.deleteUser(userDto.getPublicId());
-    Assertions.assertFalse(userService.existsByUsername(userDto.getUsername()));
+    Assertions.assertFalse(userService.existsByEmail(userDto.getEmail()));
   }
 }

@@ -65,15 +65,6 @@ public interface UserService {
   UserDto findByPublicId(String publicId);
 
   /**
-   * Returns a user for the given username or null if a user could not be found.
-   *
-   * @param username The username associated to the user to find
-   * @return a user for the given username or null if a user could not be found
-   * @throws NullPointerException in case the given entity is {@literal null}
-   */
-  UserDto findByUsername(String username);
-
-  /**
    * Returns a user for the given email or null if a user could not be found.
    *
    * @param email The email associated to the user to find
@@ -90,39 +81,38 @@ public interface UserService {
   List<UserDto> findAllNotEnabledAfterAllowedDays();
 
   /**
-   * Returns a userDetails for the given username or null if a user could not be found.
+   * Returns a userDetails for the given email or null if a user could not be found.
    *
-   * @param username The username associated to the user to find
-   * @return a user for the given username or null if a user could not be found
+   * @param email The email associated to the user to find
+   * @return a user for the given email or null if a user could not be found
    * @throws NullPointerException in case the given entity is {@literal null}
    */
-  UserDetails getUserDetails(String username);
+  UserDetails getUserDetails(String email);
 
   /**
-   * Checks if the username already exists.
+   * Checks if the email already exists.
    *
-   * @param username the username
-   * @return <code>true</code> if username exists
+   * @param email the email
+   * @return <code>true</code> if email exists
    */
-  boolean existsByUsername(String username);
+  boolean existsByEmail(String email);
 
   /**
-   * Checks if the username or email already exists and enabled.
+   * Checks if the email already exists and enabled.
    *
-   * @param username the username
    * @param email the email
    * @return <code>true</code> if username exists
    */
-  boolean existsByUsernameOrEmailAndEnabled(String username, String email);
+  boolean existsByEmailAndEnabled(String email);
 
   /**
-   * Validates the username exists and the token belongs to the user with the username.
+   * Validates the publicId exists and the token belongs to the user with the publicId.
    *
-   * @param username the username
+   * @param publicId the publicId
    * @param token the token
    * @return if token is valid
    */
-  boolean isValidUsernameAndToken(String username, String token);
+  boolean isValidEmailAndToken(String publicId, String token);
 
   /**
    * Update the user with the user instance given and the update type for record.

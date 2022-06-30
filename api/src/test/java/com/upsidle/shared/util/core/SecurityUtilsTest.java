@@ -18,7 +18,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.Authentication;
 
-class SecurityUtilsTest {
+class SecurityUtilsTest extends TestUtils {
 
   @BeforeEach
   void setUp() {
@@ -104,13 +104,14 @@ class SecurityUtilsTest {
   }
 
   @Test
-  void testingGetAuthorizedUserDto(TestInfo testInfo) {
-    TestUtils.setAuthentication(testInfo.getDisplayName(), TestUtils.ROLE_USER);
+  void testingGetAuthorizedUserDto() {
+    var email = FAKER.internet().emailAddress();
+    TestUtils.setAuthentication(email, TestUtils.ROLE_USER);
 
     UserDto authorizedUserDto = SecurityUtils.getAuthorizedUserDto();
     Assertions.assertAll(
         () -> {
-          Assertions.assertEquals(testInfo.getDisplayName(), authorizedUserDto.getUsername());
+          Assertions.assertEquals(email, authorizedUserDto.getEmail());
           Assertions.assertNotNull(authorizedUserDto);
           Assertions.assertTrue(SecurityUtils.isAuthenticated());
         });

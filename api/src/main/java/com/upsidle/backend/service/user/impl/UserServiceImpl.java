@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
   public UserDto createUser(UserDto userDto, Set<RoleType> roleTypes) {
     Validate.notNull(userDto, UserConstants.USER_DTO_MUST_NOT_BE_NULL);
 
-    var localUser = userRepository.findByUsernameOrEmail(userDto.getUsername(), userDto.getEmail());
+    var localUser = userRepository.findByEmail(userDto.getEmail());
     if (Objects.nonNull(localUser)) {
       if (!localUser.isEnabled()) {
         LOG.debug(UserConstants.USER_EXIST_BUT_NOT_ENABLED, userDto.getEmail(), localUser);
@@ -152,25 +152,6 @@ public class UserServiceImpl implements UserService {
   }
 
   /**
-   * Returns a user for the given username or null if a user could not be found.
-   *
-   * @param username The username associated to the user to find
-   * @return a user for the given username or null if a user could not be found
-   * @throws NullPointerException in case the given entity is {@literal null}
-   */
-  @Override
-  @Cacheable(CacheConstants.USERS)
-  public UserDto findByUsername(String username) {
-    Validate.notNull(username, UserConstants.BLANK_USERNAME);
-
-    var storedUser = userRepository.findByUsername(username);
-    if (Objects.isNull(storedUser)) {
-      return null;
-    }
-    return UserUtils.convertToUserDto(storedUser);
-  }
-
-  /**
    * Returns a user for the given email or null if a user could not be found.
    *
    * @param email The email associated to the user to find
@@ -205,60 +186,57 @@ public class UserServiceImpl implements UserService {
   /**
    * Returns a userDetails for the given username or null if a user could not be found.
    *
-   * @param username The username associated to the user to find
+   * @param email The username associated to the user to find
    * @return a user for the given username or null if a user could not be found
    * @throws NullPointerException in case the given entity is {@literal null}
    */
   @Override
-  public UserDetails getUserDetails(String username) {
-    Validate.notNull(username, UserConstants.BLANK_USERNAME);
+  public UserDetails getUserDetails(String email) {
+    Validate.notNull(email, UserConstants.BLANK_USERNAME);
 
-    User storedUser = userRepository.findByUsername(username);
+    User storedUser = userRepository.findByEmail(email);
     return UserDetailsBuilder.buildUserDetails(storedUser);
   }
 
   /**
    * Checks if the username already exists.
    *
-   * @param username the username
+   * @param email the username
    * @return <code>true</code> if username exists
    * @throws NullPointerException in case the given entity is {@literal null}
    */
   @Override
-  public boolean existsByUsername(String username) {
-    Validate.notNull(username, UserConstants.BLANK_USERNAME);
-    return userRepository.existsByUsernameOrderById(username);
+  public boolean existsByEmail(String email) {
+    Validate.notNull(email, UserConstants.BLANK_EMAIL);
+    return userRepository.existsByEmailOrderById(email);
   }
 
   /**
-   * Checks if the username or email already exists and enabled.
+   * Checks if the email already exists and enabled.
    *
-   * @param username the username
    * @param email the email
-   * @return <code>true</code> if username exists
+   * @return <code>true</code> if email exists
    * @throws NullPointerException in case the given entity is {@literal null}
    */
   @Override
-  public boolean existsByUsernameOrEmailAndEnabled(String username, String email) {
-    Validate.notNull(username, UserConstants.BLANK_USERNAME);
+  public boolean existsByEmailAndEnabled(String email) {
     Validate.notNull(email, UserConstants.BLANK_EMAIL);
 
-    return userRepository.existsByUsernameAndEnabledTrueOrEmailAndEnabledTrueOrderById(
-        username, email);
+    return userRepository.existsByEmailAndEnabledTrueOrderById(email);
   }
 
   /**
    * Validates the username exists and the token belongs to the user with the username.
    *
-   * @param username the username
+   * @param email the username
    * @param token the token
    * @return if token is valid
    */
   @Override
-  public boolean isValidUsernameAndToken(String username, String token) {
-    Validate.notNull(username, UserConstants.BLANK_USERNAME);
+  public boolean isValidEmailAndToken(String email, String token) {
+    Validate.notNull(email, UserConstants.BLANK_EMAIL);
 
-    return userRepository.existsByUsernameAndVerificationTokenOrderById(username, token);
+    return userRepository.existsByEmailAndVerificationTokenOrderById(email, token);
   }
 
   /**
@@ -273,7 +251,6 @@ public class UserServiceImpl implements UserService {
   @Transactional
   @Caching(
       evict = {
-        @CacheEvict(value = CacheConstants.USERS, key = "#userDto.username"),
         @CacheEvict(value = CacheConstants.USERS, key = "#userDto.publicId"),
         @CacheEvict(value = CacheConstants.USERS, key = "#userDto.email")
       })

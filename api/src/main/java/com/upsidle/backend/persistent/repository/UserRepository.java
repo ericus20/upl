@@ -27,29 +27,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
   User findByEmail(String email);
 
   /**
-   * Find user by email or email.
+   * Check if user exists by email.
    *
-   * @param username username used to search for user.
-   * @param email email used to search for user.
-   * @return User found.
-   */
-  User findByUsernameOrEmail(String username, String email);
-
-  /**
-   * Find user by username.
-   *
-   * @param username username used to search for user.
-   * @return User found.
-   */
-  User findByUsername(String username);
-
-  /**
-   * Check if user exists by username.
-   *
-   * @param username username to check if user exists.
+   * @param email email to check if user exists.
    * @return True if user exists or false otherwise.
    */
-  Boolean existsByUsernameOrderById(String username);
+  Boolean existsByEmailOrderById(String email);
 
   /**
    * Check if user exists by username or email.
@@ -58,17 +41,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
    * @param email email to check if user exists.
    * @return True if user exists or false otherwise.
    */
-  Boolean existsByUsernameAndEnabledTrueOrEmailAndEnabledTrueOrderById(
-      String username, String email);
+  Boolean existsByEmailAndEnabledTrueOrderById(String email);
 
   /**
-   * Check if user exists by username and verificationToken.
+   * Check if user exists by email and verificationToken.
    *
-   * @param username the username
+   * @param email the email
    * @param verificationToken the verification token
    * @return if user exists with the given verification token
    */
-  Boolean existsByUsernameAndVerificationTokenOrderById(String username, String verificationToken);
+  Boolean existsByEmailAndVerificationTokenOrderById(String email, String verificationToken);
 
   /**
    * Find user by public id.

@@ -16,6 +16,7 @@ import javax.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.springframework.data.annotation.CreatedBy;
@@ -126,7 +127,7 @@ public class BaseEntity<T extends Serializable> {
    */
   @PrePersist
   private void onCreate() {
-    if (Objects.isNull(getPublicId())) {
+    if (StringUtils.isBlank(getPublicId())) {
       setPublicId(UUID.randomUUID().toString());
     }
   }
