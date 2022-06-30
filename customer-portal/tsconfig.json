@@ -17,6 +17,14 @@
     "incremental": true,
     "types": ["node"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "jest.config.js"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "jest.config.js",
+    "config/index.js",
+    "config/development.js",
+    "config/default.js"
+  ],
   "exclude": ["node_modules"]
 }
