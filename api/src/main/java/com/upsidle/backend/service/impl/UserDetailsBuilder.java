@@ -33,6 +33,7 @@ public final class UserDetailsBuilder implements UserDetails {
   @EqualsAndHashCode.Include private String publicId;
   @EqualsAndHashCode.Include private String username;
   private String firstName;
+  private String middleName;
   private String lastName;
   private String password;
   private String phone;
@@ -70,6 +71,7 @@ public final class UserDetailsBuilder implements UserDetails {
         .username(user.getUsername())
         .password(user.getPassword())
         .firstName(user.getFirstName())
+        .middleName(user.getMiddleName())
         .lastName(user.getLastName())
         .publicId(user.getPublicId())
         .enabled(user.isEnabled())

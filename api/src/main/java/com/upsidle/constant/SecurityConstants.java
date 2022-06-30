@@ -58,6 +58,7 @@ public final class SecurityConstants {
           HttpHeaders.AUTHORIZATION,
           HttpHeaders.CACHE_CONTROL,
           HttpHeaders.CONTENT_TYPE,
+          HttpHeaders.SET_COOKIE,
           HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS,
           HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS,
           HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN);

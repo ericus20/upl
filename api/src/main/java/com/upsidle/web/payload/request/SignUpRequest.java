@@ -27,6 +27,8 @@ public final class SignUpRequest {
   @Size(min = 3, max = 50, message = UserConstants.USERNAME_SIZE)
   private String username;
 
+  private String name;
+
   @Size(max = 60)
   @EqualsAndHashCode.Include
   @Email(message = UserConstants.INVALID_EMAIL)

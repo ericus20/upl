@@ -4,7 +4,7 @@ import Home from "../src/pages/index";
 
 describe("Home", () => {
   it("renders a heading", () => {
-    render(<Home />);
+    render(<Home products={[]} />);
 
     const heading = screen.getByRole("heading", {
       name: /Hello World/i,

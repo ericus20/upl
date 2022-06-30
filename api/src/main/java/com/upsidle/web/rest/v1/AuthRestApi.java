@@ -104,9 +104,9 @@ public class AuthRestApi {
       @CookieValue String refreshToken, HttpServletRequest request) {
 
     var decryptedRefreshToken = encryptionService.decrypt(refreshToken);
-    boolean refreshTokenValid = jwtService.isValidJwtToken(decryptedRefreshToken);
+    boolean isRefreshTokenValid = jwtService.isValidJwtToken(decryptedRefreshToken);
 
-    if (!refreshTokenValid) {
+    if (!isRefreshTokenValid) {
       throw new IllegalArgumentException(ErrorConstants.INVALID_TOKEN);
     }
     var username = jwtService.getUsernameFromToken(decryptedRefreshToken);
@@ -115,11 +115,13 @@ public class AuthRestApi {
     SecurityUtils.validateUserDetailsStatus(userDetails);
     SecurityUtils.authenticateUser(request, userDetails);
 
-    var expiration = DateUtils.addMinutes(new Date(), NUMBER_OF_MINUTES_TO_EXPIRE);
-    var newAccessToken = jwtService.generateJwtToken(username, expiration);
-    var encryptedAccessToken = encryptionService.encrypt(newAccessToken);
+    var responseHeaders = new HttpHeaders();
+    String newAccessToken = updateCookies(username, false, responseHeaders);
+    String encryptedAccessToken = encryptionService.encrypt(newAccessToken);
 
-    return ResponseEntity.ok(JwtResponseBuilder.buildJwtResponse(encryptedAccessToken));
+    return ResponseEntity.ok()
+        .headers(responseHeaders)
+        .body(JwtResponseBuilder.buildJwtResponse(encryptedAccessToken));
   }
 
   /**
@@ -160,7 +162,7 @@ public class AuthRestApi {
       cookieService.addCookieToHeaders(headers, TokenType.REFRESH, encryptedToken, refreshDuration);
     }
 
-    var accessTokenExpiration = DateUtils.addMinutes(new Date(), NUMBER_OF_MINUTES_TO_EXPIRE);
+    var accessTokenExpiration = DateUtils.addSeconds(new Date(), NUMBER_OF_MINUTES_TO_EXPIRE);
     return jwtService.generateJwtToken(username, accessTokenExpiration);
   }
 }
