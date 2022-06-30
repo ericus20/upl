@@ -162,7 +162,7 @@ public class AuthRestApi {
       cookieService.addCookieToHeaders(headers, TokenType.REFRESH, encryptedToken, refreshDuration);
     }
 
-    var accessTokenExpiration = DateUtils.addSeconds(new Date(), NUMBER_OF_MINUTES_TO_EXPIRE);
+    var accessTokenExpiration = DateUtils.addMinutes(new Date(), NUMBER_OF_MINUTES_TO_EXPIRE);
     return jwtService.generateJwtToken(username, accessTokenExpiration);
   }
 }

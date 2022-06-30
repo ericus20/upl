@@ -121,7 +121,10 @@ const Alert: React.FC<AlertProps> = ({ id, fade }) => {
 
           <div className="flex flex-grow items-center justify-between">
             {alert.message && (
-              <span dangerouslySetInnerHTML={{ __html: alert.message }} />
+              <span
+                className="text-center"
+                dangerouslySetInnerHTML={{ __html: alert.message }}
+              />
             )}
             <button
               type="button"

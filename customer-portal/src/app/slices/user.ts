@@ -3,9 +3,10 @@ import {
   createSlice,
   SerializedError,
 } from "@reduxjs/toolkit";
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import AlertId from "enums/AlertId";
 import Status from "enums/Status";
+import ErrorResponse from "models/ErrorResponse";
 import JwtResponse from "models/JwtResponse";
 import SignUpRequest from "models/SignUpRequest";
 import User from "models/User";
@@ -36,12 +37,28 @@ export const signUp = createAsyncThunk(
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
         },
+        withCredentials: true,
         data: JSON.stringify(signUpRequest),
       };
       const response = await axios.request<JwtResponse>(requestOptions);
 
+      // Trigger alert for the successful registration pending verification.
+      alertService.success(
+        "Please check your email to complete registration.",
+        { id: AlertId.SIGN_UP }
+      );
       return response.data;
     } catch (error) {
+      // check if error is an axios error
+      if (error && axios.isAxiosError(error)) {
+        const err = error as AxiosError<ErrorResponse, unknown>;
+        if (err.response) {
+          alertService.error(err.response?.data.message, {
+            id: AlertId.SIGN_UP,
+          });
+        }
+      }
+
       return thunkAPI.rejectWithValue({ error });
     }
   }
@@ -59,11 +76,6 @@ export const userSlice = createSlice({
         state.loading = Status.LOADING;
       })
       .addCase(signUp.fulfilled, state => {
-        // Trigger alert for the successful registration pending verification.
-        alertService.success(
-          "Please check your email to complete registration.",
-          { id: AlertId.SIGN_UP }
-        );
         state.loading = Status.IDLE;
       })
       .addCase(signUp.rejected, (state, action) => {

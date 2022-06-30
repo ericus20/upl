@@ -1,16 +1,18 @@
 import RoleType from "enums/RoleType";
 
 interface SignUpRequest {
-  email: string;
   username: string;
+  email: string;
   password: string;
+  passwordConfirm: string;
   roles: RoleType[];
 }
 
 export const initialSignUp: SignUpRequest = {
-  email: "",
   username: "",
+  email: "",
   password: "",
+  passwordConfirm: "",
   roles: [RoleType.USER],
 };
 
