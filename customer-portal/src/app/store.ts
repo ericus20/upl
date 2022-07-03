@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import {
   Action,
   AnyAction,
@@ -6,22 +7,24 @@ import {
   configureStore,
   ThunkAction,
 } from "@reduxjs/toolkit";
-import { HYDRATE } from "next-redux-wrapper";
-// eslint-disable-next-line import/no-cycle
 import authReducer, { AuthState } from "app/slices/auth";
-// eslint-disable-next-line import/no-cycle
 import cartReducer, { CartState } from "app/slices/cart";
+import productPageReducer, { ProductPageState } from "app/slices/productPage";
+import { HYDRATE } from "next-redux-wrapper";
 
 const combinedReducers = combineReducers({
   authReducer,
   cartReducer,
+  productPageReducer,
 });
+
 export type OurStore = ReturnType<typeof combinedReducers>;
 
 type RootState =
   | CombinedState<{
       authReducer: AuthState;
       cartReducer: CartState;
+      productPageReducer: ProductPageState;
     }>
   | undefined;
 

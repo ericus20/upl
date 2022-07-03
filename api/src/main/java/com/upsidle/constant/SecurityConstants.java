@@ -1,6 +1,7 @@
 package com.upsidle.constant;
 
 import com.upsidle.constant.user.PasswordConstants;
+import com.upsidle.constant.user.ProductConstants;
 import com.upsidle.constant.user.SignUpConstants;
 import java.util.Arrays;
 import java.util.Collection;
@@ -69,6 +70,7 @@ public final class SecurityConstants {
     String.join("/", SecurityConstants.LOGIN, "**"),
     String.join("/", SignUpConstants.EMAIL_VERIFY_MAPPING, "**"),
     String.join("/", PasswordConstants.PASSWORD_RESET_ROOT_MAPPING, "**"),
+    ProductConstants.API_V1_PRODUCTS_ROOT_URL + "/**"
   };
 
   private SecurityConstants() {

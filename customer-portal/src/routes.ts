@@ -7,6 +7,7 @@ const routes = {
     login: "/api/v1/auth/login",
     logout: "/api/v1/auth/logout",
     users: "/api/v1/users",
+    products: "/api/v1/products",
     refreshToken: "/api/v1/auth/refresh-token",
   },
 };

@@ -20,11 +20,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
-class AuthRestApiTest {
+class AuthControllerTest {
 
   @Mock private transient CookieService cookieService;
 
-  @InjectMocks private transient AuthRestApi authRestApi;
+  @InjectMocks private transient AuthController authController;
 
   private transient MockMvc mockMvc;
   private transient String loginUri;
@@ -33,7 +33,7 @@ class AuthRestApiTest {
 
   @BeforeEach
   void setUp() {
-    this.mockMvc = MockMvcBuilders.standaloneSetup(authRestApi).build();
+    this.mockMvc = MockMvcBuilders.standaloneSetup(authController).build();
     loginUri = String.join("/", SecurityConstants.API_V1_AUTH_ROOT_URL, SecurityConstants.LOGIN);
     refreshUri =
         String.join("/", SecurityConstants.API_V1_AUTH_ROOT_URL, SecurityConstants.REFRESH_TOKEN);

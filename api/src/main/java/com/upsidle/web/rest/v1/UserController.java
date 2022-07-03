@@ -50,7 +50,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(SecurityConstants.API_V1_USERS_ROOT_URL)
-public class UserRestApi {
+public class UserController {
 
   private final JwtService jwtService;
   private final UserService userService;

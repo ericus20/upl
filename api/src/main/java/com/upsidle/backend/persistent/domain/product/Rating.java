@@ -27,12 +27,12 @@ public class Rating extends BaseEntity<Long> implements Serializable {
   @Serial private static final long serialVersionUID = 5801740651856592988L;
 
   /** The actual rating of the product. */
-  private Integer rate;
+  private Double rate;
 
   /** The number of times the product has been rated. */
   private Integer count;
 
-  public Rating(Integer rate, Integer count) {
+  public Rating(Double rate, Integer count) {
     this.rate = rate;
     this.count = count;
   }

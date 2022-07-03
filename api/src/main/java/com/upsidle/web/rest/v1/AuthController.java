@@ -46,7 +46,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(SecurityConstants.API_V1_AUTH_ROOT_URL)
-public class AuthRestApi {
+public class AuthController {
 
   private static final int NUMBER_OF_MINUTES_TO_EXPIRE = 30;
 

@@ -9,9 +9,14 @@ const nextConfig = {
   env: {
     ...envVariables,
     buildEnv,
+    stripePublicKey: process.env.STRIPE_PUBLIC_KEY,
   },
   images: {
-    domains: ["links.papareact.com", "fakestoreapi.com"],
+    domains: [
+      "links.papareact.com",
+      "fakestoreapi.com",
+      "image.shutterstock.com",
+    ],
   },
   reactStrictMode: true,
 };

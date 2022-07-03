@@ -6,18 +6,30 @@ import {
   UserCircleIcon,
 } from "@heroicons/react/outline";
 import { useAppSelector } from "app/hooks";
-import { selectItem } from "app/slices/cart";
+import { selectItemCount } from "app/slices/cart";
+import { selectProductPage } from "app/slices/productPage";
+import Autocomplete from "components/Autocomplete";
+import Product from "models/Product";
 import React, { useState } from "react";
 import Link from "./Link";
 
 const Header = () => {
+  const { content: products } = useAppSelector(selectProductPage);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const products = useAppSelector(selectItem);
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [showResults, setShowResults] = useState<boolean>(false);
+  const numberOfProductsInCart = useAppSelector(selectItemCount);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+
     let term = e.target.value;
     term = term.toLowerCase();
     setSearchTerm(term);
+
+    setSearchResults(
+      products?.filter(product => product.title.toLowerCase().includes(term))
+    );
   };
 
   return (
@@ -51,9 +63,20 @@ const Header = () => {
             value={searchTerm}
             placeholder="Search products..."
             onChange={handleSearch}
+            onBlur={() => setShowResults(false)}
+            onFocus={() => setShowResults(true)}
+            onClick={() => setShowResults(true)}
             className="p-2 h-full border-1 flex-grow flex-shrink focus:outline-yellow-400 px-4"
           />
           <SearchIcon className="h-12 p-4" />
+
+          {showResults && (
+            <Autocomplete
+              searchTerm={searchTerm}
+              searchResults={searchResults}
+              setShowResults={setShowResults}
+            />
+          )}
         </div>
 
         {/* Right Side */}
@@ -61,7 +84,7 @@ const Header = () => {
           <div className="relative link flex items-center space-x-2">
             <ShoppingCartIcon className="h-10" />
             <span className="absolute top-0 right-0 md:right-10 h-4 w-4 bg-yellow-400 text-center rounded-full text-black font-bold">
-              {products.length}
+              {numberOfProductsInCart}
             </span>
             <p className="hidden md:inline md:text-sm mt-2">Cart</p>
           </div>

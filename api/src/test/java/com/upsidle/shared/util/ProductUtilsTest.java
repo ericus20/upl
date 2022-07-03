@@ -16,6 +16,6 @@ class ProductUtilsTest {
   void createProduct() {
     var product = ProductUtils.createProduct();
 
-    Assertions.assertNotNull(product.getName());
+    Assertions.assertNotNull(product.getTitle());
   }
 }

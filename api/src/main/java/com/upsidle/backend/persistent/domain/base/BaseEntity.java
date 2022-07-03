@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.Version;
-import javax.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -62,8 +61,7 @@ public class BaseEntity<T extends Serializable> {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = SEQUENCE_GENERATOR_NAME)
   private T id;
 
-  @Column(unique = true, nullable = false)
-  @NotBlank(message = "Public facing id is needed for all entities")
+  @Column(unique = true, nullable = false, updatable = false)
   private String publicId;
 
   /** Manages the version of Entities to measure the amount of modifications made to this entity. */
@@ -126,7 +124,7 @@ public class BaseEntity<T extends Serializable> {
    * shared publicly over the internet.
    */
   @PrePersist
-  private void onCreate() {
+  private synchronized void onCreate() {
     if (StringUtils.isBlank(getPublicId())) {
       setPublicId(UUID.randomUUID().toString());
     }

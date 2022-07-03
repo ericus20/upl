@@ -30,7 +30,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @TestInstance(Lifecycle.PER_CLASS)
-class AuthRestApiIntegrationTest extends IntegrationTestUtils {
+class AuthControllerIntegrationTest extends IntegrationTestUtils {
 
   private transient String loginUri;
   private transient String logoutUri;

@@ -95,11 +95,11 @@ public class UserServiceImpl implements UserService {
   public UserDto createUser(UserDto userDto, Set<RoleType> roleTypes) {
     Validate.notNull(userDto, UserConstants.USER_DTO_MUST_NOT_BE_NULL);
 
-    var localUser = userRepository.findByEmail(userDto.getEmail());
-    if (Objects.nonNull(localUser)) {
-      if (!localUser.isEnabled()) {
-        LOG.debug(UserConstants.USER_EXIST_BUT_NOT_ENABLED, userDto.getEmail(), localUser);
-        return UserUtils.convertToUserDto(localUser);
+    var storedUser = userRepository.findByEmail(userDto.getEmail());
+    if (Objects.nonNull(storedUser)) {
+      if (!storedUser.isEnabled()) {
+        LOG.debug(UserConstants.USER_EXIST_BUT_NOT_ENABLED, userDto.getEmail(), storedUser);
+        return UserUtils.convertToUserDto(storedUser);
       }
       LOG.warn(UserConstants.USER_ALREADY_EXIST, userDto.getEmail());
     } else {

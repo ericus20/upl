@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.auditing.DateTimeProvider;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * This class holds application configuration settings for this application.
@@ -36,5 +37,10 @@ public class ApplicationConfig {
   @Primary
   public DateTimeProvider dateTimeProvider() {
     return new ApplicationDateTimeProvider(clock());
+  }
+
+  @Bean
+  public RestTemplate getRestTemplate() {
+    return new RestTemplate();
   }
 }

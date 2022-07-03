@@ -25,8 +25,6 @@ import lombok.ToString;
 public class UserDto extends BaseDto implements Serializable {
   @Serial private static final long serialVersionUID = -6342630857637389028L;
 
-  @EqualsAndHashCode.Include private String publicId;
-
   @EqualsAndHashCode.Include
   @NotBlank(message = UserConstants.BLANK_NAME)
   private String name;

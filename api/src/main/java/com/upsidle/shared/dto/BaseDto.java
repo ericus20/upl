@@ -1,5 +1,6 @@
 package com.upsidle.shared.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,9 +15,11 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class BaseDto {
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private Long id;
 
   @EqualsAndHashCode.Include private int version;
+  @EqualsAndHashCode.Include private String publicId;
   private LocalDateTime createdAt;
   private String createdBy;
   private LocalDateTime updatedAt;

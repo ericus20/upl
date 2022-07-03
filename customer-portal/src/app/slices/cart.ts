@@ -19,7 +19,8 @@ export const cartSlice = createSlice({
     addToCart: (state: CartState, action: PayloadAction<{ item: Item }>) => {
       // search with the id to find existing item and update the quantity if found
       const index = state.items.findIndex(
-        cartItem => cartItem.product.id === action.payload.item.product.id
+        cartItem =>
+          cartItem.product.publicId === action.payload.item.product.publicId
       );
 
       if (action.payload.item.quantity > 0) {
@@ -29,15 +30,14 @@ export const cartSlice = createSlice({
           state.items = [...state.items, action.payload.item];
         }
       }
-      state.items = [...state.items, action.payload.item];
     },
     removeFromCart: (
       state: CartState,
-      action: PayloadAction<{ id: number }>
+      action: PayloadAction<{ publicId: string }>
     ) => {
       // searching with id
       const index = state.items.findIndex(
-        cartItem => cartItem.product.id === action.payload.id
+        cartItem => cartItem.product.publicId === action.payload.publicId
       );
 
       const newBasket = [...state.items];
@@ -51,10 +51,10 @@ export const cartSlice = createSlice({
     },
     updateQuantity: (
       state: CartState,
-      action: PayloadAction<{ id: number; quantity: number }>
+      action: PayloadAction<{ publicId: string; quantity: number }>
     ) => {
       const index = state.items.findIndex(
-        basketItem => basketItem.product.id === action.payload.id
+        cartItem => cartItem.product.publicId === action.payload.publicId
       );
 
       if (index >= 0) {
@@ -78,6 +78,8 @@ export const { addToCart, removeFromCart, updateQuantity } = cartSlice.actions;
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 export const selectItem = (state: AppState) => state.cartReducer.items;
+export const selectItemCount = (state: AppState) =>
+  state.cartReducer.items.length;
 
 // Computes the total of the items in the cart
 export const selectTotal = (state: AppState): number =>

@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -15,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -32,12 +34,16 @@ import org.hibernate.envers.NotAudited;
 @NoArgsConstructor
 @ToString(callSuper = true)
 public class Product extends BaseEntity<Long> implements Serializable {
-
   @Serial private static final long serialVersionUID = 5801740651856592988L;
 
-  private String name;
-  private String imageUrl;
+  @Column(unique = true, nullable = false)
+  private String title;
+
+  private String image;
+
+  @Column(length = 100000)
   private String description;
+
   private BigDecimal price;
   private boolean active;
   private int unitsInStock;
@@ -48,13 +54,16 @@ public class Product extends BaseEntity<Long> implements Serializable {
   private Rating rating;
 
   @NotAudited
+  @JsonIgnore
   @ToString.Exclude
   @JoinColumn(nullable = false)
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(
+      cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH},
+      fetch = FetchType.LAZY)
   private Category category;
 
-  public Product(String name) {
-    this.name = name;
+  public Product(String title) {
+    this.title = title;
   }
 
   @Override
@@ -65,7 +74,7 @@ public class Product extends BaseEntity<Long> implements Serializable {
     if (!(o instanceof Product product) || !super.equals(o)) {
       return false;
     }
-    return Objects.equals(getName(), product.getName());
+    return Objects.equals(getTitle(), product.getTitle());
   }
 
   @Override
@@ -75,6 +84,6 @@ public class Product extends BaseEntity<Long> implements Serializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getName());
+    return Objects.hash(super.hashCode(), getTitle());
   }
 }

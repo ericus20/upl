@@ -27,7 +27,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @TestInstance(Lifecycle.PER_CLASS)
-class UserRestApiIntegrationTest extends IntegrationTestUtils {
+class UserControllerIntegrationTest extends IntegrationTestUtils {
 
   private transient String loginUri;
   private transient String loginRequestJson;
