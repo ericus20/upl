@@ -23,6 +23,7 @@
     "axios-auth-refresh": "^3.3.1",
     "classnames": "^2.3.1",
     "cookie": "^0.5.0",
+    "immutable": "^4.1.0",
     "lodash": "^4.17.21",
     "next": "12.1.6",
     "next-redux-wrapper": "^7.0.5",

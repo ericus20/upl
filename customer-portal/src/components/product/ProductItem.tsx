@@ -52,7 +52,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
       </div>
 
       <button type="button" onClick={addItemToCart} className="mt-auto button">
-        {added ? "Added" : "Add to Busket"}
+        {added ? "Added" : "Add to Cart"}
       </button>
     </div>
   );

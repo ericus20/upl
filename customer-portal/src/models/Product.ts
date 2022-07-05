@@ -1,3 +1,5 @@
+import Category from "./product/Category";
+
 interface Product {
   publicId: string;
   title: string;
@@ -11,10 +13,7 @@ interface Product {
     rate: number;
     count: number;
   };
-  category: {
-    publicId: string;
-    name: string;
-  };
+  category: Category;
 }
 
 export const initialProductState: Product = {

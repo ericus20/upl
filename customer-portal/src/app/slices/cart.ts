@@ -77,7 +77,7 @@ export const { addToCart, removeFromCart, updateQuantity } = cartSlice.actions;
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
-export const selectItem = (state: AppState) => state.cartReducer.items;
+export const selectItems = (state: AppState) => state.cartReducer.items;
 export const selectItemCount = (state: AppState) =>
   state.cartReducer.items.length;
 

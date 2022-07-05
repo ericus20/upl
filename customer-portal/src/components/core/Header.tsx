@@ -5,20 +5,20 @@ import {
   ShoppingCartIcon,
   UserCircleIcon,
 } from "@heroicons/react/outline";
-import { useAppSelector } from "app/hooks";
 import { selectItemCount } from "app/slices/cart";
 import { selectProductPage } from "app/slices/productPage";
 import Autocomplete from "components/Autocomplete";
 import Product from "models/Product";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import Link from "./Link";
 
 const Header = () => {
-  const { content: products } = useAppSelector(selectProductPage);
+  const { content: products } = useSelector(selectProductPage);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [showResults, setShowResults] = useState<boolean>(false);
-  const numberOfProductsInCart = useAppSelector(selectItemCount);
+  const numberOfProductsInCart = useSelector(selectItemCount);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -81,13 +81,16 @@ const Header = () => {
 
         {/* Right Side */}
         <div className="flex items-center text-xs space-x-10 mx-6 whitespace-nowrap">
-          <div className="relative link flex items-center space-x-2">
+          <Link
+            href="/checkout"
+            className="relative link flex items-center space-x-2"
+          >
             <ShoppingCartIcon className="h-10" />
             <span className="absolute top-0 right-0 md:right-10 h-4 w-4 bg-yellow-400 text-center rounded-full text-black font-bold">
               {numberOfProductsInCart}
             </span>
             <p className="hidden md:inline md:text-sm mt-2">Cart</p>
-          </div>
+          </Link>
 
           <div className="link flex items-center space-x-2">
             <HeartIcon className="h-6" />

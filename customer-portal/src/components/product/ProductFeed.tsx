@@ -14,7 +14,7 @@ const ProductFeed = () => {
 
       <div className="md:col-span-full relative h-[40vh]">
         <Image
-          src="https://links.papareact.com/dyz"
+          src="https://image.shutterstock.com/image-vector/online-shopping-web-banners-concepts-600w-1713476485.jpg"
           alt=""
           layout="fill"
           objectFit="cover"
