@@ -5,12 +5,15 @@ import {
   ShoppingCartIcon,
   UserCircleIcon,
 } from "@heroicons/react/outline";
+import { useAppDispatch, useAppSelector } from "app/hooks";
+import { logout, selectAuth } from "app/slices/auth";
 import { selectItemCount } from "app/slices/cart";
 import { selectProductPage } from "app/slices/productPage";
 import Autocomplete from "components/Autocomplete";
 import Product from "models/Product";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { alertService } from "services";
 import Link from "./Link";
 
 const Header = () => {
@@ -19,6 +22,8 @@ const Header = () => {
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [showResults, setShowResults] = useState<boolean>(false);
   const numberOfProductsInCart = useSelector(selectItemCount);
+  const { isLoggedIn, principal: user } = useAppSelector(selectAuth);
+  const dispatch = useAppDispatch();
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -30,6 +35,18 @@ const Header = () => {
     setSearchResults(
       products?.filter(product => product.title.toLowerCase().includes(term))
     );
+  };
+
+  const signOut = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+
+    const result = await dispatch(logout());
+
+    if (result.meta.requestStatus === "fulfilled") {
+      alertService.success("Logout Successful", {
+        fade: true,
+      });
+    }
   };
 
   return (
@@ -97,18 +114,27 @@ const Header = () => {
             <p className="md:text-sm">Wish List</p>
           </div>
 
-          <Link href="/secured">
-            <div className="link flex items-center space-x-2">
-              <p className="md:text-sm">Secured</p>
-            </div>
-          </Link>
+          {!isLoggedIn && (
+            <Link href="/login">
+              <div className="link flex items-center space-x-2">
+                <UserCircleIcon className="h-6" />
+                <p className="md:text-sm">Sign In</p>
+              </div>
+            </Link>
+          )}
 
-          <Link href="/login">
-            <div className="link flex items-center space-x-2">
+          {isLoggedIn && (
+            <div
+              role="button"
+              aria-hidden="true"
+              onClick={signOut}
+              className="link flex items-center space-x-2"
+            >
               <UserCircleIcon className="h-6" />
-              <p className="md:text-sm">Sign In</p>
+              <span>Welcome {user.name.split(" ")[0]}</span>
+              <p className="md:text-sm">Sign Out</p>
             </div>
-          </Link>
+          )}
         </div>
       </div>
 

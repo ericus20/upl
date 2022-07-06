@@ -5,6 +5,7 @@ import axios from "axios";
 import CheckoutProduct from "components/checkout/CheckoutPoduct";
 import Alert from "components/core/Alert";
 import AlertId from "enums/AlertId";
+import { Set } from "immutable";
 import Category from "models/product/Category";
 import StripeSession from "models/StripeSession";
 import Image from "next/image";
@@ -12,7 +13,6 @@ import React, { useEffect, useState } from "react";
 import Currency from "react-currency-formatter";
 import { useSelector } from "react-redux";
 import { alertService } from "services";
-import { Set } from "immutable";
 
 const stripePromise = loadStripe(process.env.STRIPE_PUBLIC_KEY);
 
@@ -77,9 +77,7 @@ const Checkout = () => {
 
           <div className="flex flex-col p-5 space-y-10 bg-white">
             <h1 className="text-3xl border-b pb-4">
-              {items.length === 0
-                ? "Your Amazon Basket is empty."
-                : "Shopping Basket"}
+              {items.length === 0 ? "Your cart is empty." : "Shopping Basket"}
             </h1>
 
             <div className="mb-5">

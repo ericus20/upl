@@ -8,7 +8,6 @@ import AlertId from "enums/AlertId";
 import Status from "enums/Status";
 import SignUpRequest from "models/request/SignUpRequest";
 import ErrorResponse from "models/response/ErrorResponse";
-import JwtResponse from "models/response/JwtResponse";
 import User from "models/User";
 import routes from "routes";
 import { alertService } from "services";
@@ -40,7 +39,7 @@ export const signUp = createAsyncThunk(
         withCredentials: true,
         data: JSON.stringify(signUpRequest),
       };
-      const response = await axios.request<JwtResponse>(requestOptions);
+      const response = await axios.request<string>(requestOptions);
 
       // Trigger alert for the successful registration pending verification.
       alertService.success(

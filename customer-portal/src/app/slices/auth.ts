@@ -84,7 +84,7 @@ export const refreshToken = createAsyncThunk(
 
 export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
   try {
-    const response = await axiosInstance.delete<{ accessToken: string }>(
+    const response = await axiosInstance.delete<{ status: string }>(
       routes.api.logout
     );
 
@@ -107,10 +107,7 @@ export const authSlice = createSlice({
     reset: () => initialAuthState,
   },
   extraReducers: builder => {
-    builder.addCase(logout.fulfilled, state => {
-      state.loading = Status.IDLE;
-      return initialAuthState;
-    });
+    builder.addCase(logout.fulfilled, () => initialAuthState);
     builder.addMatcher(
       isAnyOf(login.pending, refreshToken.pending, logout.pending),
       state => {

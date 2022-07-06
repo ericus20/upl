@@ -1,4 +1,5 @@
 import store from "app/store";
+import Alert from "components/core/Alert";
 import Layout from "layout/Layout";
 import { Provider } from "react-redux";
 import { AppPropsWithLayout } from "types/layout";
@@ -9,7 +10,14 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? (page => <Layout>{page}</Layout>);
 
   return (
-    <Provider store={store}>{getLayout(<Component {...pageProps} />)}</Provider>
+    <Provider store={store}>
+      {getLayout(
+        <div>
+          <Alert className="mx-[10.3125rem]" />
+          <Component {...pageProps} />
+        </div>
+      )}
+    </Provider>
   );
 };
 

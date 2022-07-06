@@ -10,6 +10,8 @@ const routes = {
     products: "/api/v1/products",
     refreshToken: "/api/v1/auth/refresh-token",
   },
+
+  publicPaths: ["/login", "sign-up", "/checkout", "/"],
 };
 
 export default routes;

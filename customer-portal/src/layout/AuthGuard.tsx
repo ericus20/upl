@@ -1,8 +1,11 @@
 import { useAppSelector } from "app/hooks";
 import { selectAuth } from "app/slices/auth";
+import Spinner from "components/core/Spinner";
 import RoleType from "enums/RoleType";
 import Status from "enums/Status";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import routes from "routes";
 
 interface AuthGuardProps {
   rolesAllowed?: string[];
@@ -16,14 +19,23 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
   children,
 }) => {
   const { loading, isLoggedIn, principal: user } = useAppSelector(selectAuth);
+  const router = useRouter();
 
   if (loading === Status.LOADING) {
-    return <>loading...</>;
+    return (
+      <>
+        <Spinner /> loading...
+      </>
+    );
   }
 
+  const path = router.asPath.split("?")[0];
+
+  // If the path is publicly allowed OR
   // If no role restrictions are provided and user is logged in OR
   // if user is logged in and user has roles specified to be permitted
   if (
+    routes.publicPaths.includes(path) ||
     (!rolesAllowed && isLoggedIn) ||
     (isLoggedIn &&
       user &&

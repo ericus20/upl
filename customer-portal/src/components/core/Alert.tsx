@@ -1,40 +1,56 @@
 /* eslint-disable react/no-danger */
 import AlertType from "enums/AlertType";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AlertBody, alertService } from "services/alert.service";
 import { v4 as uuid } from "uuid";
 
 interface AlertProps {
   id?: string;
   fade?: boolean;
+  className?: string;
 }
 
-const Alert: React.FC<AlertProps> = ({ id, fade }) => {
+const Alert: React.FC<AlertProps> = ({ id, fade, className }) => {
   const router = useRouter();
+  const mounted = useRef<boolean>(false);
   const [alerts, setAlerts] = useState<AlertBody[]>([]);
 
   const removeAlert = (alert: AlertBody) => {
+    if (!mounted.current) return;
+
     if (fade) {
       // fade out alert
       const alertWithFade = { ...alert, fade: true };
       setAlerts(previousAlerts =>
-        previousAlerts.map(x => (x === alert ? alertWithFade : x))
+        previousAlerts.map(x => (x.id === alert.id ? alertWithFade : x))
       );
 
       // remove alert after faded out
       setTimeout(() => {
         setAlerts(previousAlerts =>
-          previousAlerts.filter(x => x !== alertWithFade)
+          previousAlerts.filter(x => x.id !== alertWithFade.id)
         );
       }, 250);
     } else {
       // remove alert
-      setAlerts(previousAlerts => previousAlerts.filter(x => x !== alert));
+      setAlerts(previousAlerts =>
+        previousAlerts.filter(x => x.id !== alert.id)
+      );
     }
   };
 
+  const omit = (arr: AlertBody[], key: keyof AlertBody): AlertBody[] => {
+    return arr.map(obj => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [key]: omitted, ...rest } = obj;
+      return rest;
+    });
+  };
+
   useEffect(() => {
+    mounted.current = true;
+
     // subscribe to new alert notifications
     const subscription = alertService.onAlert(id).subscribe(alert => {
       // clear alerts when an empty alert is received
@@ -43,10 +59,8 @@ const Alert: React.FC<AlertProps> = ({ id, fade }) => {
           // filter out alerts without 'keepAfterRouteChange' flag
           const filteredAlerts = thisAlerts.filter(x => x.keepAfterRouteChange);
 
-          // set 'keepAfterRouteChange' flag to false on the rest
-          // eslint-disable-next-line no-param-reassign
-          filteredAlerts.forEach(x => delete x.keepAfterRouteChange);
-          return filteredAlerts;
+          // remove 'keepAfterRouteChange' flag on the rest
+          return omit(filteredAlerts, "keepAfterRouteChange");
         });
       } else {
         // add alert to array
@@ -67,6 +81,8 @@ const Alert: React.FC<AlertProps> = ({ id, fade }) => {
 
     // clean up function that runs when the component unmounts
     return () => {
+      mounted.current = false;
+
       // unsubscribe to avoid memory leaks
       subscription.unsubscribe();
       router.events.off("routeChangeStart", clearAlerts);
@@ -91,8 +107,8 @@ const Alert: React.FC<AlertProps> = ({ id, fade }) => {
       classes.push(alertTypeClass[alert.type]);
     }
 
-    if (alert.fade) {
-      classes.push("fade");
+    if (fade || alert.fade) {
+      classes.push("animate-fade-in animate-fade-out");
     }
 
     return classes.join(" ");
@@ -101,7 +117,7 @@ const Alert: React.FC<AlertProps> = ({ id, fade }) => {
   if (!alerts.length) return null;
 
   return (
-    <div role="alert">
+    <div role="alert" className={className}>
       {alerts.map(alert => (
         <div
           key={uuid()}
@@ -143,6 +159,7 @@ const Alert: React.FC<AlertProps> = ({ id, fade }) => {
 Alert.defaultProps = {
   id: "default-alert",
   fade: false,
+  className: "my-1",
 };
 
 export default Alert;
