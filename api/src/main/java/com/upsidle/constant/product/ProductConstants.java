@@ -1,4 +1,4 @@
-package com.upsidle.constant.user;
+package com.upsidle.constant.product;
 
 import com.upsidle.constant.ErrorConstants;
 

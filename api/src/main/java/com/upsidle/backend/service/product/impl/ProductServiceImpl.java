@@ -4,7 +4,7 @@ import com.upsidle.backend.persistent.domain.product.Product;
 import com.upsidle.backend.persistent.repository.product.CategoryRepository;
 import com.upsidle.backend.persistent.repository.product.ProductRepository;
 import com.upsidle.backend.service.product.ProductService;
-import com.upsidle.constant.user.ProductConstants;
+import com.upsidle.constant.product.ProductConstants;
 import com.upsidle.shared.dto.product.ProductDto;
 import com.upsidle.shared.util.ProductUtils;
 import java.util.Objects;

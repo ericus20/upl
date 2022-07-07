@@ -12,9 +12,11 @@ import com.upsidle.constant.user.UserConstants;
 import com.upsidle.enums.OperationStatus;
 import com.upsidle.enums.UserHistoryType;
 import com.upsidle.exception.InvalidServiceRequestException;
+import com.upsidle.exception.UnAuthorizedActionException;
 import com.upsidle.exception.user.InvalidTokenException;
 import com.upsidle.exception.user.UserAlreadyExistsException;
 import com.upsidle.shared.dto.UserDto;
+import com.upsidle.shared.dto.product.CartDto;
 import com.upsidle.shared.util.UserUtils;
 import com.upsidle.shared.util.core.SecurityUtils;
 import com.upsidle.web.payload.request.SignUpRequest;
@@ -99,6 +101,25 @@ public class UserController {
     userService.deleteUser(publicId);
 
     return ResponseEntity.ok(OperationStatus.SUCCESS);
+  }
+
+  @Loggable
+  @SecurityRequirements
+  @GetMapping("/{publicId}/cart")
+  public ResponseEntity<CartDto> getCart(@PathVariable String publicId) {
+    var userDto = SecurityUtils.getAuthorizedUserDto();
+    if (Objects.isNull(userDto)
+        || Objects.isNull(userDto.getPublicId())
+        || !userDto.getPublicId().equals(publicId)) {
+      throw new UnAuthorizedActionException(ErrorConstants.UNAUTHORIZED_ACCESS);
+    }
+
+    var storedUserDto = userService.findByPublicId(publicId);
+    if (Objects.nonNull(storedUserDto)) {
+      return ResponseEntity.ok(storedUserDto.getCart());
+    }
+
+    return ResponseEntity.notFound().build();
   }
 
   @Loggable

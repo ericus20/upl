@@ -9,8 +9,8 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 /**
- * The ProductDtoMapper class outlines the supported conversions between User entity and other data
- * transfer objects.
+ * The CategoryDtoMapper class outlines the supported conversions between category entity and other
+ * data transfer objects.
  *
  * @author Eric Opoku
  * @version 1.0

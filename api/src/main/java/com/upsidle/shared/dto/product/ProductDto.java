@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import net.minidev.json.annotate.JsonIgnore;
 
 /**
- * The ProductDto transfers user details from outside into the application and vice versa.
+ * The ProductDto transfers product details from outside into the application and vice versa.
  *
  * @author Eric Opoku
  * @version 1.0

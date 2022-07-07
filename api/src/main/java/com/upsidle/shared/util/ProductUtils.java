@@ -3,7 +3,7 @@ package com.upsidle.shared.util;
 import com.upsidle.backend.persistent.domain.product.Category;
 import com.upsidle.backend.persistent.domain.product.Product;
 import com.upsidle.constant.ErrorConstants;
-import com.upsidle.constant.user.ProductConstants;
+import com.upsidle.constant.product.ProductConstants;
 import com.upsidle.shared.dto.mapper.CycleAvoidingMappingContext;
 import com.upsidle.shared.dto.mapper.product.ProductDtoMapper;
 import com.upsidle.shared.dto.product.ProductDto;

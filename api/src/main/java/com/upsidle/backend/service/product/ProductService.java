@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 /**
- * This ProductService interface is the contract for the user service operations.
+ * This ProductService is the contract for the product service operations.
  *
  * @author Eric Opoku
  * @version 1.0

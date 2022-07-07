@@ -11,8 +11,8 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 /**
- * The ProductDtoMapper class outlines the supported conversions between User entity and other data
- * transfer objects.
+ * The ProductDtoMapper class outlines the supported conversions between Product entity and other
+ * data transfer objects.
  *
  * <p><a
  * href="https://github.com/mapstruct/mapstruct-examples/tree/2f351577c1cb595c7c239eb6f8e7c000ed8a5ce2/mapstruct-mapping-with-cycles">...</a>

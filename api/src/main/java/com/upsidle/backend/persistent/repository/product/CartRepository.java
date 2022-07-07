@@ -1,12 +1,13 @@
 package com.upsidle.backend.persistent.repository.product;
 
-import com.upsidle.backend.persistent.domain.product.Product;
+import com.upsidle.backend.persistent.domain.product.Cart;
+import com.upsidle.backend.persistent.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Repository;
 
 /**
- * Repository for the Product.
+ * Repository for the ShoppingCart.
  *
  * @author Eric Opoku
  * @version 1.0
@@ -14,13 +15,13 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @RepositoryRestResource(exported = false)
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface CartRepository extends JpaRepository<Cart, Long> {
 
   /**
-   * Find product by title.
+   * Find shopping cart by user.
    *
-   * @param title title used to search for product.
-   * @return Product found.
+   * @param user user used to search for category.
+   * @return ShoppingCart found.
    */
-  Product findByTitle(String title);
+  Cart findByUser(User user);
 }

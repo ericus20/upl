@@ -1,7 +1,7 @@
 package com.upsidle.constant;
 
+import com.upsidle.constant.product.ProductConstants;
 import com.upsidle.constant.user.PasswordConstants;
-import com.upsidle.constant.user.ProductConstants;
 import com.upsidle.constant.user.SignUpConstants;
 import java.util.Arrays;
 import java.util.Collection;
