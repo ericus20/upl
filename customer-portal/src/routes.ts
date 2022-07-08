@@ -8,10 +8,11 @@ const routes = {
     logout: "/api/v1/auth/logout",
     users: "/api/v1/users",
     products: "/api/v1/products",
+    carts: "/api/v1/carts",
     refreshToken: "/api/v1/auth/refresh-token",
   },
 
-  publicPaths: ["/login", "sign-up", "/checkout", "/"],
+  publicPaths: ["/login", "/sign-up", "/checkout", "/"],
 };
 
 export default routes;

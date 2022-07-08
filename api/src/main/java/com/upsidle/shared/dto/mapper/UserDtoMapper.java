@@ -3,6 +3,7 @@ package com.upsidle.shared.dto.mapper;
 import com.upsidle.backend.persistent.domain.user.User;
 import com.upsidle.backend.service.impl.UserDetailsBuilder;
 import com.upsidle.shared.dto.UserDto;
+import com.upsidle.shared.dto.mapper.product.CartItemDtoMapper;
 import com.upsidle.web.payload.request.SignUpRequest;
 import java.util.List;
 import org.mapstruct.Mapper;
@@ -20,7 +21,8 @@ import org.mapstruct.factory.Mappers;
  */
 @Mapper(
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
-    imports = {com.upsidle.shared.util.UserUtils.class})
+    imports = {com.upsidle.shared.util.UserUtils.class},
+    uses = {CartItemDtoMapper.class})
 public interface UserDtoMapper {
 
   /** The Dto mapper instance. */

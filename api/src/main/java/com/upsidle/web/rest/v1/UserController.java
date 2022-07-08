@@ -2,6 +2,7 @@ package com.upsidle.web.rest.v1;
 
 import com.upsidle.annotation.Loggable;
 import com.upsidle.backend.service.mail.EmailService;
+import com.upsidle.backend.service.product.CartItemService;
 import com.upsidle.backend.service.security.EncryptionService;
 import com.upsidle.backend.service.security.JwtService;
 import com.upsidle.backend.service.user.UserService;
@@ -16,12 +17,13 @@ import com.upsidle.exception.UnAuthorizedActionException;
 import com.upsidle.exception.user.InvalidTokenException;
 import com.upsidle.exception.user.UserAlreadyExistsException;
 import com.upsidle.shared.dto.UserDto;
-import com.upsidle.shared.dto.product.CartDto;
+import com.upsidle.shared.dto.product.CartItemDto;
 import com.upsidle.shared.util.UserUtils;
 import com.upsidle.shared.util.core.SecurityUtils;
 import com.upsidle.web.payload.request.SignUpRequest;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +59,7 @@ public class UserController {
   private final JwtService jwtService;
   private final UserService userService;
   private final EmailService emailService;
+  private final CartItemService cartItemService;
   private final EncryptionService encryptionService;
 
   @Value("${customerPortalUrl}")
@@ -106,7 +109,7 @@ public class UserController {
   @Loggable
   @SecurityRequirements
   @GetMapping("/{publicId}/cart")
-  public ResponseEntity<CartDto> getCart(@PathVariable String publicId) {
+  public ResponseEntity<Set<CartItemDto>> getCart(@PathVariable String publicId) {
     var userDto = SecurityUtils.getAuthorizedUserDto();
     if (Objects.isNull(userDto)
         || Objects.isNull(userDto.getPublicId())
@@ -115,11 +118,9 @@ public class UserController {
     }
 
     var storedUserDto = userService.findByPublicId(publicId);
-    if (Objects.nonNull(storedUserDto)) {
-      return ResponseEntity.ok(storedUserDto.getCart());
-    }
+    Set<CartItemDto> cartItems = cartItemService.findByUser(storedUserDto);
 
-    return ResponseEntity.notFound().build();
+    return ResponseEntity.ok(cartItems);
   }
 
   @Loggable
@@ -148,8 +149,8 @@ public class UserController {
 
     var location =
         ServletUriComponentsBuilder.fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(savedUserDto.getId())
+            .path("/{publicId}")
+            .buildAndExpand(savedUserDto.getPublicId())
             .toUri();
 
     return ResponseEntity.created(location).body(OperationStatus.SUCCESS);

@@ -1,25 +1,26 @@
 import { loadStripe } from "@stripe/stripe-js";
+import { useAppSelector } from "app/hooks";
 import { AuthState, selectAuth } from "app/slices/auth";
-import { selectItems, selectTotal } from "app/slices/cart";
+import { selectItemCount, selectItems, selectTotal } from "app/slices/cart";
 import axios from "axios";
 import CheckoutProduct from "components/checkout/CheckoutPoduct";
 import Alert from "components/core/Alert";
 import AlertId from "enums/AlertId";
-import { Set } from "immutable";
+import { DeepSet } from "models/DeepSet";
 import Category from "models/product/Category";
 import StripeSession from "models/StripeSession";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import Currency from "react-currency-formatter";
-import { useSelector } from "react-redux";
 import { alertService } from "services";
 
 const stripePromise = loadStripe(process.env.STRIPE_PUBLIC_KEY);
 
 const Checkout = () => {
-  const { isLoggedIn, principal }: AuthState = useSelector(selectAuth);
-  const items = useSelector(selectItems);
-  const total = useSelector(selectTotal);
+  const { isLoggedIn, principal }: AuthState = useAppSelector(selectAuth);
+  const items = useAppSelector(selectItems);
+  const total = useAppSelector(selectTotal);
+  const itemsCount = useAppSelector(selectItemCount);
   const [categories, setCategories] = useState<Category[]>([]);
 
   const createCheckoutSession = async (
@@ -56,7 +57,7 @@ const Checkout = () => {
 
   useEffect(() => {
     const allCategories = items.map(item => item.product.category);
-    const unique = [...Set<Category>(allCategories)];
+    const unique = [...new DeepSet<Category>(allCategories)];
 
     setCategories(unique);
   }, [items]);
@@ -77,7 +78,11 @@ const Checkout = () => {
 
           <div className="flex flex-col p-5 space-y-10 bg-white">
             <h1 className="text-3xl border-b pb-4">
-              {items.length === 0 ? "Your cart is empty." : "Shopping Basket"}
+              {items.length === 0
+                ? "Your cart is empty."
+                : `Shopping Cart: ${itemsCount} ${
+                    itemsCount > 1 ? "items" : "item"
+                  }`}
             </h1>
 
             <div className="mb-5">
@@ -96,10 +101,7 @@ const Checkout = () => {
                             item => item.product.category.name === category.name
                           )
                           .map(item => (
-                            <CheckoutProduct
-                              key={item.product.publicId}
-                              item={item}
-                            />
+                            <CheckoutProduct key={item.publicId} item={item} />
                           ))}
                     </div>
                   </React.Fragment>

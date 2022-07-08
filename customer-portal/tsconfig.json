@@ -24,7 +24,8 @@
     "jest.config.js",
     "config/index.js",
     "config/development.js",
-    "config/default.js"
+    "config/default.js",
+    "src/models/DeepSet.js"
   ],
   "exclude": ["node_modules"]
 }

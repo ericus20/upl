@@ -1,9 +1,10 @@
 package com.upsidle.shared.util;
 
-import com.upsidle.backend.persistent.domain.product.Cart;
+import com.upsidle.backend.persistent.domain.product.CartItem;
 import com.upsidle.constant.ErrorConstants;
-import com.upsidle.shared.dto.mapper.product.CartDtoMapper;
-import com.upsidle.shared.dto.product.CartDto;
+import com.upsidle.shared.dto.mapper.product.CartItemDtoMapper;
+import com.upsidle.shared.dto.product.CartItemDto;
+import java.util.Set;
 import net.datafaker.Faker;
 
 /**
@@ -24,10 +25,20 @@ public final class CartUtils {
   /**
    * Transfers data from entity to transfer object.
    *
-   * @param cart stored cart
-   * @return cart dto
+   * @param cartItem stored cartItem
+   * @return cartItem dto
    */
-  public static CartDto convertToCartDto(final Cart cart) {
-    return CartDtoMapper.MAPPER.to(cart);
+  public static CartItemDto convertToCartDto(final CartItem cartItem) {
+    return CartItemDtoMapper.MAPPER.to(cartItem);
+  }
+
+  /**
+   * Transfers data from entity to transfer object.
+   *
+   * @param cartItems stored cartItems
+   * @return cartItems dto
+   */
+  public static Set<CartItemDto> convertToCartDto(final Set<CartItem> cartItems) {
+    return CartItemDtoMapper.MAPPER.to(cartItems);
   }
 }

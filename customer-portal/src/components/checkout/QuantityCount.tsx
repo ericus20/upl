@@ -1,6 +1,12 @@
-import { updateQuantity } from "app/slices/cart";
+import { useAppDispatch, useAppSelector } from "app/hooks";
+import { selectAuth } from "app/slices/auth";
+import {
+  decrementQuantity,
+  incrementQuantity,
+  updateQuantity,
+} from "app/slices/cart";
+import Item from "models/item";
 import React from "react";
-import { useDispatch } from "react-redux";
 
 interface QuantityCountProps {
   publicId: string;
@@ -10,29 +16,68 @@ interface QuantityCountProps {
 }
 
 const QuantityCount: React.FC<QuantityCountProps> = ({
-  publicId,
+  publicId: cartItemId,
   quantity,
   dispatch,
   setQuantity,
 }) => {
-  const quantityDispatch = useDispatch();
+  const quantityDispatch = useAppDispatch();
+  const { isLoggedIn } = useAppSelector(selectAuth);
 
-  const updateQuantityHere = (count: number) => {
+  const updateQuantityHere = async (count: number) => {
     if (dispatch) {
-      const product = { publicId, quantity: count };
-      quantityDispatch(updateQuantity(product));
+      const cartItem = { publicId: cartItemId, quantity: count };
+      quantityDispatch(updateQuantity(cartItem));
     }
   };
 
-  const increaseCount = () => {
+  const increaseCount = async () => {
     setQuantity(quantity + 1);
     updateQuantityHere(quantity + 1);
+
+    if (isLoggedIn) {
+      await quantityDispatch(incrementQuantity(cartItemId));
+    } else {
+      const storedItemJson = localStorage.getItem("items");
+
+      if (storedItemJson) {
+        const storedItems: Item[] = JSON.parse(storedItemJson);
+        const index = storedItems.findIndex(
+          cartItem => cartItem.publicId === cartItemId
+        );
+
+        if (index >= 0) {
+          storedItems[`${index}`].quantity += 1;
+        }
+
+        localStorage.setItem("items", JSON.stringify(storedItems));
+      }
+    }
   };
 
   const decreaseCount = () => {
     if (quantity > 0) {
       setQuantity(quantity - 1);
       updateQuantityHere(quantity - 1);
+
+      if (isLoggedIn) {
+        quantityDispatch(decrementQuantity(cartItemId));
+      } else {
+        const storedItemJson = localStorage.getItem("items");
+
+        if (storedItemJson) {
+          const storedItems: Item[] = JSON.parse(storedItemJson);
+          const index = storedItems.findIndex(
+            cartItem => cartItem.publicId === cartItemId
+          );
+
+          if (index >= 0) {
+            storedItems[`${index}`].quantity -= 1;
+          }
+
+          localStorage.setItem("items", JSON.stringify(storedItems));
+        }
+      }
     }
   };
 

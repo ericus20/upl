@@ -25,7 +25,7 @@ export const initialUserState: UserState = {
 };
 
 export const signUp = createAsyncThunk(
-  "/users",
+  "users",
   async (signUpRequest: SignUpRequest, thunkAPI) => {
     try {
       const requestOptions: AxiosRequestConfig<string> = {

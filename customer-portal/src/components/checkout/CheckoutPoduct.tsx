@@ -1,10 +1,11 @@
-import { removeFromCart } from "app/slices/cart";
+import { useAppDispatch, useAppSelector } from "app/hooks";
+import { selectAuth } from "app/slices/auth";
+import { removeCartItemFromApi, removeFromCart } from "app/slices/cart";
 import RatingStar from "components/product/RatingStar";
 import Item from "models/item";
 import Image from "next/image";
 import React, { useState } from "react";
 import Currency from "react-currency-formatter";
-import { useDispatch } from "react-redux";
 import QuantityCount from "./QuantityCount";
 
 interface CheckoutProductProps {
@@ -12,16 +13,38 @@ interface CheckoutProductProps {
 }
 
 const CheckoutProduct: React.FC<CheckoutProductProps> = ({ item }) => {
-  const { product, quantity } = item;
-  const { publicId, title, price, description, image, rating } = product;
+  const { publicId: cartItemId, product, quantity } = item;
+  const { title, price, description, image, rating } = product;
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [quantityUp, setQuantityUp] = useState(quantity);
+  const { isLoggedIn } = useAppSelector(selectAuth);
 
-  const removeItemFromBasket = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const removeItemFromBasket = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
 
-    dispatch(removeFromCart({ publicId }));
+    dispatch(removeFromCart({ publicId: cartItemId }));
+
+    if (isLoggedIn) {
+      await dispatch(removeCartItemFromApi(cartItemId));
+    } else {
+      const storedItemJson = localStorage.getItem("items");
+      if (storedItemJson) {
+        const storedItems: Item[] = JSON.parse(storedItemJson);
+        const index = storedItems.findIndex(
+          cartItem => cartItem.publicId === cartItemId
+        );
+
+        if (index >= 0) {
+          // The item exists in the basket... remove it...
+          storedItems.splice(index, 1);
+        }
+
+        localStorage.setItem("items", JSON.stringify(storedItems));
+      }
+    }
   };
 
   return (
@@ -44,7 +67,7 @@ const CheckoutProduct: React.FC<CheckoutProductProps> = ({ item }) => {
       {/* Right add/remove buttons */}
       <div className="flex flex-col space-y-2 my-auto justify-self-end">
         <QuantityCount
-          publicId={publicId}
+          publicId={cartItemId}
           dispatch
           setQuantity={setQuantityUp}
           quantity={quantityUp}

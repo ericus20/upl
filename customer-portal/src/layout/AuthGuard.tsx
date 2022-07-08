@@ -23,9 +23,9 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
 
   if (loading === Status.LOADING) {
     return (
-      <>
+      <div className="align-middle flex items-center justify-center">
         <Spinner /> loading...
-      </>
+      </div>
     );
   }
 

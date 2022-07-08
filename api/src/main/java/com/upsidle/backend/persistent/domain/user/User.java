@@ -2,7 +2,7 @@ package com.upsidle.backend.persistent.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.upsidle.backend.persistent.domain.base.BaseEntity;
-import com.upsidle.backend.persistent.domain.product.Cart;
+import com.upsidle.backend.persistent.domain.product.CartItem;
 import com.upsidle.constant.user.UserConstants;
 import java.io.Serial;
 import java.io.Serializable;
@@ -12,9 +12,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -75,8 +73,8 @@ public class User extends BaseEntity<Long> implements Serializable {
 
   @NotAudited
   @ToString.Exclude
-  @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  private Cart cart;
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  private Set<CartItem> cartItems = new HashSet<>();
 
   @Override
   public boolean equals(Object o) {

@@ -67,7 +67,7 @@ export const login = createAsyncThunk(
   }
 );
 
-export const refreshToken = createAsyncThunk(
+export const refreshToken = createAsyncThunk<JwtResponse>(
   "auth/refreshToken",
   async (_, thunkAPI) => {
     try {

@@ -23,4 +23,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
    * @return Product found.
    */
   Product findByTitle(String title);
+
+  Product findByPublicId(String publicId);
 }

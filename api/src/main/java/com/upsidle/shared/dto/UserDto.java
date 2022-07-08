@@ -3,7 +3,7 @@ package com.upsidle.shared.dto;
 import com.upsidle.backend.persistent.domain.user.UserHistory;
 import com.upsidle.backend.persistent.domain.user.UserRole;
 import com.upsidle.constant.user.UserConstants;
-import com.upsidle.shared.dto.product.CartDto;
+import com.upsidle.shared.dto.product.CartItemDto;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -53,5 +53,5 @@ public class UserDto extends BaseDto implements Serializable {
 
   @ToString.Exclude private Set<UserHistory> userHistories = new HashSet<>();
 
-  private CartDto cart;
+  @ToString.Exclude private Set<CartItemDto> cartItems = new HashSet<>();
 }

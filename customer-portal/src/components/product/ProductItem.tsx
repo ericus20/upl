@@ -1,9 +1,13 @@
-import { addToCart } from "app/slices/cart";
+import { useAppDispatch, useAppSelector } from "app/hooks";
+import { selectAuth } from "app/slices/auth";
+import { addCartItemToApi, addToCart } from "app/slices/cart";
+import { AppDispatch } from "app/store";
+import Item from "models/item";
 import Product from "models/Product";
 import Image from "next/image";
 import React, { useState } from "react";
 import Currency from "react-currency-formatter";
-import { useDispatch } from "react-redux";
+import { v4 as uuid } from "uuid";
 import RatingStar from "./RatingStar";
 
 interface ProductItemProps {
@@ -13,15 +17,41 @@ interface ProductItemProps {
 const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
   const { title, price, description, category, image, rating } = product;
 
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useAppDispatch();
   const [rate] = useState<number>(rating.rate);
   const [count] = useState<number>(rating.count);
   const [added, setAdded] = useState<boolean>(false);
+  const { isLoggedIn } = useAppSelector(selectAuth);
 
-  const addItemToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const addItemToCart = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+    const item: Item = { publicId: uuid(), product, quantity: 1 };
 
-    dispatch(addToCart({ item: { product, quantity: 1 } }));
+    await dispatch(addToCart({ item }));
+
+    if (isLoggedIn) {
+      await dispatch(addCartItemToApi(item));
+    } else {
+      // save item to local storage
+      const storedItemJson = localStorage.getItem("items");
+
+      if (storedItemJson) {
+        const storedItems: Item[] = JSON.parse(storedItemJson);
+        const index = storedItems.findIndex(
+          cartItem => cartItem.product.publicId === item.product.publicId
+        );
+
+        if (index >= 0) {
+          storedItems[`${index}`].quantity += 1;
+        } else {
+          storedItems.push(item);
+        }
+
+        localStorage.setItem("items", JSON.stringify(storedItems));
+      } else {
+        localStorage.setItem("items", JSON.stringify([item]));
+      }
+    }
 
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
