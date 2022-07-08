@@ -10,13 +10,32 @@ import Spinner from "components/core/Spinner";
 import AlertId from "enums/AlertId";
 import LoginRequest from "models/request/LoginRequest";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { alertService } from "services";
 import { NextPageWithLayout } from "types/layout";
 import * as Yup from "yup";
 
+/**
+ * The Login component.
+ *
+ * @returns the login page
+ */
 const Login: NextPageWithLayout = () => {
   const router = useRouter();
+  const { query } = useRouter();
   const dispatch: AppDispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (query.confirmed) {
+      alertService.success("Account successfully created.", {
+        id: AlertId.LOGIN,
+        autoClose: false,
+      });
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query.confirmed]);
 
   // form validation rules
   const validationSchema = Yup.object().shape({
@@ -32,9 +51,16 @@ const Login: NextPageWithLayout = () => {
     useForm<LoginRequest>(formOptions);
   const { errors } = formState;
 
+  /**
+   * Function triggered on submitting the login form.
+   * Dispatches login action with the specified credentials to the API.
+   *
+   * @param credentials the login credentials
+   */
   const onSubmit = async (credentials: LoginRequest) => {
     const result = await dispatch(login(credentials));
 
+    // Once login is successful, redirect user to home
     if (result.meta.requestStatus === "fulfilled") {
       router.push("/");
     }
@@ -48,9 +74,12 @@ const Login: NextPageWithLayout = () => {
       <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-md sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700 w-1/4">
         <Alert id={AlertId.LOGIN} />
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+          {/* Heading */}
           <h5 className="text-lg text-center font-medium text-gray-900 dark:text-white">
             Sign in
           </h5>
+
+          {/* Email */}
           <div>
             <label
               htmlFor="email"
@@ -71,6 +100,8 @@ const Login: NextPageWithLayout = () => {
               {errors.email?.message}
             </div>
           </div>
+
+          {/* Password */}
           <div>
             <label
               htmlFor="password"
@@ -91,7 +122,10 @@ const Login: NextPageWithLayout = () => {
               {errors.password?.message}
             </div>
           </div>
+
+          {/* Remember me and password reset */}
           <div className="flex items-start">
+            {/* Remember me */}
             <div className="flex items-start">
               <div className="flex items-center h-5">
                 <input
@@ -108,6 +142,8 @@ const Login: NextPageWithLayout = () => {
                 Remember me
               </label>
             </div>
+
+            {/* Password reset */}
             <a
               href="#"
               className="ml-auto text-sm text-blue-700 hover:underline dark:text-blue-500"
@@ -115,6 +151,8 @@ const Login: NextPageWithLayout = () => {
               Lost Password?
             </a>
           </div>
+
+          {/* Submit button */}
           <button
             type="submit"
             disabled={formState.isSubmitting}
@@ -126,6 +164,8 @@ const Login: NextPageWithLayout = () => {
             {formState.isSubmitting && <Spinner />}
             {formState.isSubmitting ? "Logging in..." : "Login"}
           </button>
+
+          {/* Create account */}
           <div className="text-sm font-medium text-gray-500 dark:text-gray-300">
             Not registered?{" "}
             <Link
@@ -141,6 +181,10 @@ const Login: NextPageWithLayout = () => {
   );
 };
 
+/**
+ * Specify a custom layout to be used in rendering the login page.
+ * We do not want to use the default since we don't want the header.
+ */
 Login.getLayout = (page: React.ReactElement) => page;
 
 export default Login;

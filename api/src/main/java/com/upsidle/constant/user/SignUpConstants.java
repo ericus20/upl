@@ -15,6 +15,7 @@ public final class SignUpConstants {
   public static final String SIGN_UP_MAPPING = "/sign-up";
 
   public static final String ACCOUNT_EXISTS = "Account already exist!";
+  public static final String ACCOUNT_CONFIRMED = "confirmed";
 
   public static final String EMAIL_VERIFY_MAPPING = "/verify-email";
 

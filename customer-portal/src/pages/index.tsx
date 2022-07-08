@@ -11,13 +11,27 @@ import { useEffect } from "react";
 import routes from "routes";
 import { alertService } from "services";
 
+/**
+ * The Home page is the landing page where all products are rendered.
+ *
+ * @param productPage a paged response of the products returned by the SSR
+ *
+ * @returns the home page
+ */
 const Home: NextPage<{ productPage: ProductPage }> = ({ productPage }) => {
   const dispatch = useAppDispatch();
 
+  /**
+   * Updates the state of the products with the newly received products.
+   *
+   * If no products were received, sends an alert with appropriate message.
+   */
   useEffect(() => {
-    const updateProductPage = async () => {
-      await dispatch(setProductPage({ productPage }));
+    const updateProductPage = () => {
+      dispatch(setProductPage({ productPage }));
     };
+
+    updateProductPage();
 
     if (Object.keys(productPage).length === 0) {
       alertService.info("No products available", {
@@ -26,7 +40,6 @@ const Home: NextPage<{ productPage: ProductPage }> = ({ productPage }) => {
       });
     }
 
-    updateProductPage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productPage]);
 
@@ -44,6 +57,11 @@ const Home: NextPage<{ productPage: ProductPage }> = ({ productPage }) => {
   );
 };
 
+/**
+ * Retrieve the products from the API and pass it over to the component.
+ *
+ * @returns the productPage
+ */
 export const getServerSideProps: GetServerSideProps = async () => {
   const productPage = await axiosInstance
     .get<ProductPage>(routes.api.products)

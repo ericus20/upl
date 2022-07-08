@@ -28,8 +28,19 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
    */
   CartItem findByUserAndProduct(User user, Product product);
 
+  /**
+   * Find shopping cart by publicId.
+   *
+   * @param publicId publicId used to search for cartItem.
+   * @return ShoppingCart found.
+   */
   CartItem findByPublicId(String publicId);
 
+  /**
+   * Deletes shopping cart by publicId.
+   *
+   * @param publicId publicId of cartItem to delete.
+   */
   @Modifying
   void deleteByPublicId(String publicId);
 }

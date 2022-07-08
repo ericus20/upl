@@ -36,6 +36,12 @@ public class CartController {
 
   private final CartItemService cartItemService;
 
+  /**
+   * Adds a cart item to the database.
+   *
+   * @param cartItemDto the cart item to add
+   * @return if successful, a 201 response with the location in header of the cart item is returned.
+   */
   @Loggable
   @PostMapping
   public ResponseEntity<OperationStatus> addCartItem(@RequestBody @Valid CartItemDto cartItemDto) {
@@ -51,6 +57,12 @@ public class CartController {
     return ResponseEntity.created(location).body(OperationStatus.SUCCESS);
   }
 
+  /**
+   * Increments the quantity of a cart item by 1
+   *
+   * @param publicId the public id of the cart item to increment
+   * @return if successful, a 200 response is returned.
+   */
   @Loggable
   @PutMapping("/{publicId}/increment")
   public ResponseEntity<OperationStatus> incrementQuantity(@PathVariable String publicId) {
@@ -59,6 +71,12 @@ public class CartController {
     return ResponseEntity.ok(OperationStatus.SUCCESS);
   }
 
+  /**
+   * Decrements the quantity of a cart item by 1
+   *
+   * @param publicId the public id of the cart item to decrement
+   * @return if successful, a 200 response is returned.
+   */
   @Loggable
   @PutMapping("/{publicId}/decrement")
   public ResponseEntity<OperationStatus> decrementQuantity(@PathVariable String publicId) {
@@ -68,6 +86,12 @@ public class CartController {
     return ResponseEntity.ok(OperationStatus.SUCCESS);
   }
 
+  /**
+   * Deletes a cart item from the database.
+   *
+   * @param publicId the public id of the cart item to delete
+   * @return if successful, a 200 response is returned.
+   */
   @Loggable
   @DeleteMapping("/{publicId}")
   public ResponseEntity<OperationStatus> deleteCartItem(@PathVariable String publicId) {

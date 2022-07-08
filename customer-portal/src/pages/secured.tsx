@@ -17,11 +17,9 @@ const Secured = () => {
   const enableUser = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    const status = await axiosInstance.put<string>(
+    await axiosInstance.put<string>(
       `/api/v1/users/${principal.publicId}/enable`
     );
-
-    console.log("status", await status);
   };
 
   return (

@@ -13,6 +13,7 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
     <Provider store={store}>
       {getLayout(
         <div>
+          {/* A global and generic alert to be used to braodcast messages across all components */}
           <Alert className="mx-[10.3125rem]" />
           <Component {...pageProps} />
         </div>

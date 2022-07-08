@@ -47,9 +47,12 @@ const SignUp: NextPageWithLayout = () => {
       <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-md sm:p-4 lg:p-6 dark:bg-gray-800 dark:border-gray-700 w-1/4">
         <Alert id={AlertId.SIGN_UP} />
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+          {/* Heading */}
           <h5 className="text-lg text-center font-medium text-gray-900 dark:text-white">
             Sign Up
           </h5>
+
+          {/* Name */}
           <div>
             <label
               htmlFor="name"
@@ -69,6 +72,8 @@ const SignUp: NextPageWithLayout = () => {
               {errors.name?.message}
             </div>
           </div>
+
+          {/* Email */}
           <div>
             <label
               htmlFor="email"
@@ -89,6 +94,8 @@ const SignUp: NextPageWithLayout = () => {
               {errors.email?.message}
             </div>
           </div>
+
+          {/* Password */}
           <div>
             <label
               htmlFor="password"
@@ -109,6 +116,8 @@ const SignUp: NextPageWithLayout = () => {
               {errors.password?.message}
             </div>
           </div>
+
+          {/* Confirm password */}
           <div>
             <label
               htmlFor="passwordConfirm"
@@ -129,6 +138,8 @@ const SignUp: NextPageWithLayout = () => {
               {errors.passwordConfirm?.message}
             </div>
           </div>
+
+          {/* Terms and login link */}
           <div className="flex items-start">
             <div className="flex items-start">
               <div className="flex items-center h-5">
@@ -153,6 +164,8 @@ const SignUp: NextPageWithLayout = () => {
               Alredy have an account?
             </Link>
           </div>
+
+          {/* Sign Up button */}
           <button
             type="submit"
             disabled={formState.isSubmitting}
@@ -167,6 +180,10 @@ const SignUp: NextPageWithLayout = () => {
   );
 };
 
+/**
+ * Specify a custom layout to be used in rendering the login page.
+ * We do not want to use the default since we don't want the header.
+ */
 SignUp.getLayout = (page: React.ReactElement) => page;
 
 export default SignUp;

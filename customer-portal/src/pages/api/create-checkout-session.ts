@@ -10,8 +10,10 @@ const createCheckoutSession = async (
   req: NextApiRequest,
   res: NextApiResponse<StripeSession>
 ) => {
+  // Destruct the items and email from the requet body.
   const { items, email } = <{ items: Item[]; email: string }>req.body;
 
+  // format the items to be displayed on the checkout page.
   const transformedItems = items.map(item => ({
     description: item.product.description,
     quantity: item.quantity,

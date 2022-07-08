@@ -23,6 +23,11 @@ const Checkout = () => {
   const itemsCount = useAppSelector(selectItemCount);
   const [categories, setCategories] = useState<Category[]>([]);
 
+  /**
+   * Creates checkout session using the backend api /create-checkout-session.ts.
+   *
+   * @param event the click event
+   */
   const createCheckoutSession = async (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -55,6 +60,12 @@ const Checkout = () => {
     }
   };
 
+  /**
+   * Uses a custom data structure to remove duplicates allowing products to be
+   * grouped based on categories.
+   *
+   * Built-in Set does not perform deep compare of elements since the default checks for references
+   */
   useEffect(() => {
     const allCategories = items.map(item => item.product.category);
     const unique = [...new DeepSet<Category>(allCategories)];

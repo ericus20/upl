@@ -29,6 +29,7 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -178,12 +179,13 @@ public class UserController {
     SecurityUtils.authenticateUser(userDetails);
 
     var location =
-        ServletUriComponentsBuilder.fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(userDto.getId())
+        ServletUriComponentsBuilder.fromHttpUrl(customerPortalUrl)
+            .path(SecurityConstants.LOGIN)
+            .queryParam(SignUpConstants.ACCOUNT_CONFIRMED, "true")
+            .build()
             .toUri();
 
-    return ResponseEntity.created(location).body(OperationStatus.SUCCESS);
+    return ResponseEntity.status(HttpStatus.FOUND).location(location).build();
   }
 
   /**

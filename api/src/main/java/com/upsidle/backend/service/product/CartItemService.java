@@ -14,7 +14,7 @@ import java.util.Set;
 public interface CartItemService {
 
   /**
-   * Adds the product to the shopping cart.
+   * Adds the cart item to the shopping cart.
    *
    * @param cartItemDto the cartItemDto
    * @return the cartDto.
@@ -32,7 +32,7 @@ public interface CartItemService {
   Set<CartItemDto> findByUser(final UserDto userDto);
 
   /**
-   * Increments the count of the product.
+   * Increments the count of the products in a cart.
    *
    * @param publicId the publicId of the cartItem to increment
    * @return the updated product count.
@@ -41,7 +41,7 @@ public interface CartItemService {
   Integer incrementQuantity(String publicId);
 
   /**
-   * Decrements the count of the product.
+   * Decrements the count of the products in a cart.
    *
    * @param publicId the publicId of the cartItem to decrement
    * @return the updated product count.
