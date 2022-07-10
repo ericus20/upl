@@ -10,14 +10,14 @@ import com.upsidle.constant.ErrorConstants;
 public final class PasswordConstants {
 
   /** URL Mapping Constants for forget password path. */
-  public static final String PASSWORD_RESET_ROOT_MAPPING = "/password-reset";
+  public static final String PASSWORD_RESET_ROOT_MAPPING = "/api/v1/password-reset";
   /** URL Mapping Constants for change password path. */
   public static final String PASSWORD_CHANGE_PATH = "/change";
 
   /** View Name Constant for email form. */
   public static final String PASSWORD_RESET_START_VIEW_NAME = "user/password-reset-start";
   /** View Name Constant for change password. */
-  public static final String PASSWORD_RESET_COMPLETE_VIEW_NAME = "user/password-reset-complete";
+  public static final String PASSWORD_RESET_NEW = "password-reset/new";
   /** Model Key Constant for email success. */
   public static final String PASSWORD_RESET_EMAIL_SENT_KEY = "passwordResetEmailSent";
 
@@ -29,6 +29,7 @@ public final class PasswordConstants {
   public static final String ACCOUNT_IN_SESSION = "Account is currently in session!";
 
   public static final String SAME_PASSWORD = "New password is the same as current one";
+  public static final String INVALID_PASSWORD = "Current password is invalid";
   public static final String PASSWORD_UPDATE_ERROR = "An error occurred while updating password";
 
   /** Constructor for Password Token Constants made private. */

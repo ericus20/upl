@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -37,7 +36,6 @@ public class CartItem extends BaseEntity<Long> implements Serializable {
 
   @ToString.Exclude
   @ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class)
-  @JoinColumn(name = "user_id")
   private User user;
 
   @ToString.Exclude

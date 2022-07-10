@@ -27,6 +27,10 @@ const SignUp: NextPageWithLayout = () => {
       [Yup.ref("password"), null],
       "Passwords must match"
     ),
+    terms: Yup.boolean().oneOf(
+      [true],
+      "Agree to Terms & Conditions to continue"
+    ),
   });
   const formOptions = { resolver: yupResolver(validationSchema) };
 
@@ -48,9 +52,16 @@ const SignUp: NextPageWithLayout = () => {
         <Alert id={AlertId.SIGN_UP} />
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           {/* Heading */}
-          <h5 className="text-lg text-center font-medium text-gray-900 dark:text-white">
-            Sign Up
-          </h5>
+          <div className="flex justify-evenly">
+            <h5 className="text-lg text-center font-medium text-gray-900 dark:text-white">
+              Sign Up
+            </h5>
+            <Link className="link" href="/">
+              Home
+            </Link>
+          </div>
+
+          <hr />
 
           {/* Name */}
           <div>
@@ -146,23 +157,29 @@ const SignUp: NextPageWithLayout = () => {
                 <input
                   id="terms"
                   type="checkbox"
-                  value=""
+                  {...register("terms")}
                   className="w-4 h-4 bg-gray-50 rounded border border-gray-300 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
                 />
               </div>
-              <label
-                htmlFor="terms"
-                className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-              >
-                Terms &amp; condition
+              <label htmlFor="terms" className="ml-2 text-sm">
+                <Link
+                  className="link text-blue-700 dark:text-blue-500"
+                  href="/terms"
+                >
+                  Terms &amp; condition
+                </Link>
               </label>
             </div>
+
             <Link
               href="/login"
-              className="ml-auto text-sm text-blue-700 hover:underline dark:text-blue-500"
+              className="link ml-auto text-sm text-blue-700 dark:text-blue-500"
             >
-              Alredy have an account?
+              Already have an account?
             </Link>
+          </div>
+          <div className="text-red-500 text-xs my-1">
+            {errors.terms?.message}
           </div>
 
           {/* Sign Up button */}

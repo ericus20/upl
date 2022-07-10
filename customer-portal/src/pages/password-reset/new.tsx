@@ -2,67 +2,62 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useAppDispatch } from "app/hooks";
-import { login } from "app/slices/auth";
+import { passwordResetNew } from "app/slices/user";
 import { AppDispatch } from "app/store";
 import Alert from "components/core/Alert";
 import Link from "components/core/Link";
 import Spinner from "components/core/Spinner";
 import AlertId from "enums/AlertId";
-import LoginRequest from "models/request/LoginRequest";
+import PasswordResetRequest from "models/request/PasswordResetRequest";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { alertService } from "services";
 import { NextPageWithLayout } from "types/layout";
 import * as Yup from "yup";
 
 /**
- * The Login component.
+ * The PasswordChange component.
  *
- * @returns the login page
+ * @returns the password reset page
  */
-const Login: NextPageWithLayout = () => {
-  const router = useRouter();
-  const { query } = useRouter();
+const PasswordChange: NextPageWithLayout = () => {
   const dispatch: AppDispatch = useAppDispatch();
-
-  useEffect(() => {
-    if (query.confirmed) {
-      alertService.success("Account successfully created.", {
-        id: AlertId.LOGIN,
-        autoClose: false,
-      });
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query.confirmed]);
+  const { query } = useRouter();
+  const router = useRouter();
 
   // form validation rules
   const validationSchema = Yup.object().shape({
-    email: Yup.string()
-      .email("Email must be valid")
-      .required("Email is required"),
-    password: Yup.string().required("Password is required"),
+    currentPassword: Yup.string().required("Current Password is required"),
+    newPassword: Yup.string().required("New Password is required"),
+    passwordConfirm: Yup.string().oneOf(
+      [Yup.ref("newPassword"), null],
+      "Passwords must match"
+    ),
   });
   const formOptions = { resolver: yupResolver(validationSchema) };
 
   // get functions to build form with useForm() hook
   const { register, handleSubmit, formState } =
-    useForm<LoginRequest>(formOptions);
+    useForm<PasswordResetRequest>(formOptions);
   const { errors } = formState;
 
   /**
-   * Function triggered on submitting the login form.
-   * Dispatches login action with the specified credentials to the API.
+   * Function triggered on submitting the password reset form.
    *
-   * @param credentials the login credentials
+   * @param passwordResetRequest the password reset
    */
-  const onSubmit = async (credentials: LoginRequest) => {
-    const result = await dispatch(login(credentials));
+  const onSubmit = async (passwordResetRequest: PasswordResetRequest) => {
+    if (query.token) {
+      // eslint-disable-next-line no-param-reassign
+      passwordResetRequest.token = query.token?.toString();
+    }
+    const result = await dispatch(passwordResetNew(passwordResetRequest));
 
-    // Once login is successful, redirect user to home
     if (result.meta.requestStatus === "fulfilled") {
-      router.push("/");
+      alertService.success("Password successfully updated.", {
+        keepAfterRouteChange: true,
+      });
+      router.push("/login");
     }
   };
 
@@ -72,12 +67,12 @@ const Login: NextPageWithLayout = () => {
   return (
     <div className="flex m-auto mt-16 justify-center items-center">
       <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-md sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700 w-1/4">
-        <Alert id={AlertId.LOGIN} />
+        <Alert id={AlertId.NEW_PASSWORD_RESET} />
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           {/* Heading */}
           <div className="flex justify-evenly">
             <h5 className="text-lg text-center font-medium text-gray-900 dark:text-white">
-              Sign Up
+              Reset Password
             </h5>
             <Link className="link" href="/">
               Home
@@ -86,77 +81,70 @@ const Login: NextPageWithLayout = () => {
 
           <hr />
 
-          {/* Email */}
+          {/* Current password */}
           <div>
             <label
-              htmlFor="email"
+              htmlFor="currentPassword"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
             >
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              {...register("email")}
-              className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white form-control ${
-                errors.email ? redOutline : greenOutline
-              }`}
-              placeholder="Email"
-            />
-            <div className="text-red-500 text-xs my-1">
-              {errors.email?.message}
-            </div>
-          </div>
-
-          {/* Password */}
-          <div>
-            <label
-              htmlFor="password"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-            >
-              Password
+              Current Password
             </label>
             <input
               type="password"
-              {...register("password")}
-              id="password"
+              {...register("currentPassword")}
+              id="currentPassword"
               placeholder="*****"
-              className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white ${
-                errors.password ? redOutline : greenOutline
+              className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white form-control ${
+                errors.currentPassword ? redOutline : greenOutline
               }`}
             />
             <div className="text-red-500 text-xs my-1">
-              {errors.password?.message}
+              {errors.currentPassword?.message}
             </div>
           </div>
 
-          {/* Remember me and password reset */}
-          <div className="flex items-start">
-            {/* Remember me */}
-            <div className="flex items-start">
-              <div className="flex items-center h-5">
-                <input
-                  id="remember"
-                  type="checkbox"
-                  value=""
-                  className="w-4 h-4 bg-gray-50 rounded border border-gray-300 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
-                />
-              </div>
-              <label
-                htmlFor="remember"
-                className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-              >
-                Remember me
-              </label>
-            </div>
-
-            {/* Password reset */}
-            <Link
-              href="/password-reset"
-              className="ml-auto text-sm text-blue-700 hover:underline dark:text-blue-500"
+          {/* New password */}
+          <div>
+            <label
+              htmlFor="newPassword"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
             >
-              Lost Password?
-            </Link>
+              New Password
+            </label>
+            <input
+              type="password"
+              {...register("newPassword")}
+              id="newPassword"
+              placeholder="*****"
+              className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white ${
+                errors.newPassword ? redOutline : greenOutline
+              }`}
+            />
+            <div className="text-red-500 text-xs my-1">
+              {errors.newPassword?.message}
+            </div>
+          </div>
+
+          {/* Password Confirm */}
+          <div>
+            <label
+              htmlFor="passwordConfirm"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            >
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              {...register("passwordConfirm")}
+              id="passwordConfirm"
+              placeholder="*****"
+              className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white form-control ${
+                errors.passwordConfirm ? redOutline : greenOutline
+              }`}
+            />
+            <div className="text-red-500 text-xs my-1">
+              {errors.passwordConfirm?.message}
+            </div>
           </div>
 
           {/* Submit button */}
@@ -169,19 +157,8 @@ const Login: NextPageWithLayout = () => {
             }`}
           >
             {formState.isSubmitting && <Spinner />}
-            {formState.isSubmitting ? "Logging in..." : "Login"}
+            {formState.isSubmitting ? "Submitting..." : "Reset Password"}
           </button>
-
-          {/* Create account */}
-          <div className="text-sm font-medium text-gray-500 dark:text-gray-300">
-            Not registered?{" "}
-            <Link
-              href="/sign-up"
-              className="text-blue-700 hover:underline dark:text-blue-500"
-            >
-              Create account
-            </Link>
-          </div>
         </form>
       </div>
     </div>
@@ -192,6 +169,6 @@ const Login: NextPageWithLayout = () => {
  * Specify a custom layout to be used in rendering the login page.
  * We do not want to use the default since we don't want the header.
  */
-Login.getLayout = (page: React.ReactElement) => page;
+PasswordChange.getLayout = (page: React.ReactElement) => page;
 
-export default Login;
+export default PasswordChange;

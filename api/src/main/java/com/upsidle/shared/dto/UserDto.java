@@ -30,7 +30,6 @@ public class UserDto extends BaseDto implements Serializable {
   @NotBlank(message = UserConstants.BLANK_NAME)
   private String name;
 
-  @ToString.Exclude
   @NotBlank(message = UserConstants.BLANK_PASSWORD)
   private String password;
 

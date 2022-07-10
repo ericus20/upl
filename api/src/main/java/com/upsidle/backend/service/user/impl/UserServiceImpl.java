@@ -59,11 +59,17 @@ public class UserServiceImpl implements UserService {
    * @throws NullPointerException in case the given entity is {@literal null}
    */
   @Override
+  @Caching(
+      evict = {
+        @CacheEvict(value = CacheConstants.USERS, key = "#user.email"),
+        @CacheEvict(value = CacheConstants.USERS, key = "#user.publicId"),
+        @CacheEvict(value = CacheConstants.USER_DETAILS, key = "#user.email")
+      })
   @Transactional
   public UserDto saveOrUpdate(User user, boolean isUpdate) {
     Validate.notNull(user, UserConstants.USER_MUST_NOT_BE_NULL);
 
-    User persistedUser = isUpdate ? userRepository.saveAndFlush(user) : userRepository.save(user);
+    var persistedUser = isUpdate ? userRepository.saveAndFlush(user) : userRepository.save(user);
     LOG.debug(UserConstants.USER_PERSISTED_SUCCESSFULLY, persistedUser);
 
     return UserUtils.convertToUserDto(persistedUser);
@@ -164,7 +170,7 @@ public class UserServiceImpl implements UserService {
   public UserDto findByEmail(String email) {
     Validate.notNull(email, UserConstants.BLANK_EMAIL);
 
-    User storedUser = userRepository.findByEmail(email);
+    var storedUser = userRepository.findByEmail(email);
     if (Objects.isNull(storedUser)) {
       return null;
     }
@@ -250,17 +256,16 @@ public class UserServiceImpl implements UserService {
    * @throws NullPointerException in case the given entity is {@literal null}
    */
   @Override
-  @Transactional
   @Caching(
       evict = {
         @CacheEvict(value = CacheConstants.USERS, key = "#userDto.email"),
         @CacheEvict(value = CacheConstants.USERS, key = "#userDto.publicId"),
         @CacheEvict(value = CacheConstants.USER_DETAILS, key = "#userDto.email")
       })
+  @Transactional
   public UserDto updateUser(UserDto userDto, UserHistoryType userHistoryType) {
     Validate.notNull(userDto, UserConstants.USER_DTO_MUST_NOT_BE_NULL);
 
-    userDto.setVerificationToken(null);
     return persistUser(userDto, Collections.emptySet(), userHistoryType, true);
   }
 

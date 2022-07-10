@@ -50,7 +50,7 @@ const Header = () => {
   };
 
   return (
-    <header>
+    <header className="sticky top-0 z-50">
       {/* Top Nav */}
       <div className="flex mx-10 items-center bg-upsidle_white p-1 flex-grow py-2">
         <div className="m-2 flex items-center cursor-pointer uppercase mx-5 font-bold text-2xl flex-grow sm:flex-grow-0">

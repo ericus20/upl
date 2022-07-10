@@ -21,6 +21,9 @@ public enum UserHistoryType {
   VERIFIED("Account verified"),
 
   /** This will be used for password changes. */
+  PASSWORD_UPDATE_REQUESTED("Password updated requested"),
+
+  /** This will be used for password changes. */
   PASSWORD_UPDATE("Password updated"),
 
   /** This will be used for user info updates like name and phone changes. */

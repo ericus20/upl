@@ -6,6 +6,7 @@ import {
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import AlertId from "enums/AlertId";
 import Status from "enums/Status";
+import PasswordResetRequest from "models/request/PasswordResetRequest";
 import SignUpRequest from "models/request/SignUpRequest";
 import ErrorResponse from "models/response/ErrorResponse";
 import User from "models/User";
@@ -33,6 +34,7 @@ export const signUp = createAsyncThunk(
         url: routes.api.users,
         method: "POST",
         headers: {
+          // eslint-disable-next-line sonarjs/no-duplicate-string
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
         },
@@ -58,6 +60,70 @@ export const signUp = createAsyncThunk(
         }
       }
 
+      return thunkAPI.rejectWithValue({ error });
+    }
+  }
+);
+
+export const passwordReset = createAsyncThunk(
+  "/password-reset",
+  async (passwordResetRequest: PasswordResetRequest, thunkAPI) => {
+    try {
+      const requestOptions: AxiosRequestConfig<string> = {
+        baseURL: routes.api.base,
+        url: routes.api.passwordReset,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        withCredentials: true,
+        data: JSON.stringify(passwordResetRequest),
+      };
+      const response = await axios.request<string>(requestOptions);
+
+      return response.data;
+    } catch (error) {
+      // Trigger alert for the failed login attempt.
+      alertService.error("Password Reset Failed", {
+        id: AlertId.LOGIN,
+      });
+      return thunkAPI.rejectWithValue({ error });
+    }
+  }
+);
+
+export const passwordResetNew = createAsyncThunk(
+  "/password-reset/change",
+  async (passwordResetRequest: PasswordResetRequest, thunkAPI) => {
+    try {
+      const requestOptions: AxiosRequestConfig<string> = {
+        baseURL: routes.api.base,
+        url: `${routes.api.passwordReset}/change?token=${passwordResetRequest.token}`,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        withCredentials: true,
+        data: JSON.stringify(passwordResetRequest),
+      };
+      const response = await axios.request<string>(requestOptions);
+
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const message =
+          error.response?.status === 500
+            ? "Unable to reset password."
+            : error.response?.data;
+
+        // Trigger alert
+        // @ts-expect-error: Let's ignore a compile error
+        alertService.error(message, {
+          id: AlertId.NEW_PASSWORD_RESET,
+        });
+      }
       return thunkAPI.rejectWithValue({ error });
     }
   }

@@ -6,6 +6,7 @@ interface SignUpRequest {
   password: string;
   passwordConfirm: string;
   roles: RoleType[];
+  terms: boolean;
 }
 
 export const initialSignUp: SignUpRequest = {
@@ -14,6 +15,7 @@ export const initialSignUp: SignUpRequest = {
   password: "",
   passwordConfirm: "",
   roles: [RoleType.USER],
+  terms: false,
 };
 
 export default SignUpRequest;

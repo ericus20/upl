@@ -2,12 +2,14 @@ package com.upsidle.shared.util.core;
 
 import com.upsidle.constant.EmailConstants;
 import com.upsidle.constant.ErrorConstants;
+import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.thymeleaf.util.StringUtils;
 
 /**
  * This utility class holds all common methods used in the web layer.
@@ -85,6 +87,51 @@ public final class WebUtils {
     }
 
     return ServletUriComponentsBuilder.fromOriginHeader(origin).toUriString();
+  }
+
+  /**
+   * Generate a URI to the password reset page based on the path.
+   *
+   * @param url the url
+   * @param path the path to the password reset page.
+   * @return the URI to the password reset page.
+   */
+  public static URI getUri(String url, String path) {
+    return getUri(url, path, StringUtils.EMPTY);
+  }
+
+  /**
+   * Generate a URI to the password reset page based on the path.
+   *
+   * @param url the url
+   * @param path the path to the password reset page.
+   * @return the URI to the password reset page.
+   */
+  public static URI getUri(String url, String path, String token) {
+    if (StringUtils.isNotBlank(token)) {
+      return ServletUriComponentsBuilder.fromHttpUrl(url)
+          .path(path)
+          .queryParam(WebUtils.TOKEN, token)
+          .build()
+          .toUri();
+    }
+
+    return ServletUriComponentsBuilder.fromHttpUrl(url).path(path).build().toUri();
+  }
+
+  /**
+   * Generate a URI to the password reset page based on the path.
+   *
+   * @param url the url
+   * @param path the path to the password reset page.
+   * @return the URI to the password reset page.
+   */
+  public static URI getUri(String url, String path, MultiValueMap<String, String> params) {
+    return ServletUriComponentsBuilder.fromHttpUrl(url)
+        .path(path)
+        .queryParams(params)
+        .build()
+        .toUri();
   }
 
   /**

@@ -38,11 +38,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 public class BaseEntity<T extends Serializable> {
 
-  private static final String SEQUENCE_NAME = "SpringBootStarterSequence";
+  private static final String SEQUENCE_NAME = "ApiSequence";
   private static final String SEQUENCE_INITIAL_VALUE = "1";
   private static final String STRATEGY =
       "com.upsidle.backend.persistent.domain.base.AssignedSequenceStyleGenerator";
-  private static final String SEQUENCE_GENERATOR_NAME = "SpringBootStarterSequenceGenerator";
+  private static final String SEQUENCE_GENERATOR_NAME = "ApiSequenceGenerator";
 
   /**
    * Sequence Style Generator to auto generate ID based on the choices in the parameters.
@@ -71,8 +71,8 @@ public class BaseEntity<T extends Serializable> {
   @Column(updatable = false)
   private LocalDateTime createdAt;
 
-  @Column(nullable = false, updatable = false)
   @CreatedBy
+  @Column(nullable = false, updatable = false)
   private String createdBy;
 
   @Column @LastModifiedDate private LocalDateTime updatedAt;

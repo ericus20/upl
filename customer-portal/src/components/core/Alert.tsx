@@ -21,7 +21,7 @@ const Alert: React.FC<AlertProps> = ({ id, fade, className }) => {
 
     if (fade) {
       // fade out alert
-      const alertWithFade = { ...alert, fade: true };
+      const alertWithFade: AlertBody = { ...alert, fade: true };
       setAlerts(previousAlerts =>
         previousAlerts.map(x => (x.id === alert.id ? alertWithFade : x))
       );
