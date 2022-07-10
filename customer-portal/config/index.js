@@ -7,6 +7,7 @@ const defaultEnvVariables = require("./default");
  */
 const environments = {
   development: merge({}, defaultEnvVariables, require("./development")),
+  production: merge({}, defaultEnvVariables, require("./production")),
 };
 
 module.exports = environments;
