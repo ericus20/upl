@@ -104,3 +104,8 @@ jobs:
       - name: Build App
         run: yarn build
         working-directory: ${{ env.working-dir }}
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: build # The folder the action should deploy.
