@@ -12,7 +12,7 @@ import routes from "routes";
 import { alertService } from "services";
 
 /**
- * The Home page is the landing page where all products are rendered.
+ * The Home page is the landing page where all products are rendered. temp
  *
  * @param productPage a paged response of the products returned by the SSR
  *
