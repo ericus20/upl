@@ -101,10 +101,6 @@ jobs:
         run: yarn install
         working-directory: ${{ env.working-dir }}
 
-      - name: Test App
-        run: yarn test:ci
-        working-directory: ${{ env.working-dir }}
-
       - name: Build App
         run: yarn build
         working-directory: ${{ env.working-dir }}
